@@ -2,7 +2,7 @@
 
 Quiz für den **Hands-on Project Day 2026** von **The Cloud Bootcamp**. Teilnehmende beantworten 8 Fragen und erfahren ihr Cloud-Profil in fünf Dimensionen: Multicloud, DevOps & Automatisierung, Security, FinOps und Daten & KI. Am Ende erhalten sie ein persönliches virtuelles Badge als PNG (1080×1350), bereit zum Teilen auf LinkedIn.
 
-Die Oberfläche ist auf Deutsch. Die portugiesischen Originale (Fragen und Design-Vorgaben) liegen als Pages-Dokumente in `ausgangsmaterial/`.
+Die Oberfläche ist auf Deutsch. 
 
 ## Funktionen
 
