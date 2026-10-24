@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;background:#00051E;color:#FFFFFF;font-family:Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:#00FFC4;text-decoration:none}a:hover{color:#00FF95;text-decoration:underline}
+</style>
+</helmet>
+<div style="min-height:100vh;background:linear-gradient(160deg,#02122C 0%,#00051E 55%,#010E20 100%);padding:64px 32px 96px;box-sizing:border-box">
+<div style="max-width:1200px;margin:0 auto;display:flex;flex-direction:column;gap:80px">
+
+<header style="display:flex;flex-direction:column;align-items:flex-start;gap:28px;padding-bottom:40px;border-bottom:1px solid #183C78">
+  <img src="assets/logo-tcb.svg" alt="The Cloud Bootcamp" style="height:72px;width:auto;display:block">
+  <div style="display:flex;align-items:center;gap:18px;flex-wrap:wrap">
+    <span style="font-size:16px;font-weight:600;letter-spacing:0.22em;color:#FFFFFF">HANDS-ON PROJECT DAY</span>
+    <span style="width:2px;height:20px;background:#00FFC4"></span>
+    <span style="font-family:Sora,Inter,sans-serif;font-size:18px;font-weight:700;letter-spacing:0.12em;color:#00FFC4">2026</span>
+  </div>
+  <h1 style="margin:0;font-family:Sora,Inter,sans-serif;font-weight:800;font-size:clamp(44px,7vw,80px);line-height:1;letter-spacing:-0.02em">Styleguide</h1>
+  <p style="margin:0;max-width:640px;font-size:18px;line-height:1.55;color:#A9B6D0;text-wrap:pretty">Visuelles System für „Welches Cloud-Profil bist du?“. Tokens aus dem offiziellen Logo und dem freigegebenen Badge. Hintergrund immer dunkel.</p>
+</header>
+
+<section style="display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;font-weight:600;letter-spacing:0.22em;color:#00FFC4">01</span><h2 style="margin:0;font-family:Sora,Inter,sans-serif;font-size:32px;font-weight:700">Farben</h2></div>
+  <sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+    <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px">
+      <h3 style="margin:0;font-size:13px;font-weight:600;letter-spacing:0.22em;color:#A9B6D0">{{ g.title }}</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
+        <sc-for list="{{ g.items }}" as="c" hint-placeholder-count="5">
+          <div style="display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:#010C20">
+            <div style="height:104px;background:{{ c.hex }};border-bottom:1px solid rgba(255,255,255,0.08)"></div>
+            <div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+              <code style="font-size:13px;color:#FFFFFF">{{ c.token }}</code>
+              <span style="font-size:13px;color:#00FFC4;font-weight:600">{{ c.hex }}</span>
+              <span style="font-size:13px;color:#A9B6D0;line-height:1.4">{{ c.use }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </sc-for>
+  <h3 style="margin:0;font-size:13px;font-weight:600;letter-spacing:0.22em;color:#A9B6D0">VERLÄUFE</h3>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px">
+    <div style="display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:#010C20">
+      <div style="height:160px;background:linear-gradient(160deg,#02122C 0%,#00051E 55%,#010E20 100%)"></div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Standard-Hintergrund</span><code style="font-size:12px;color:#A9B6D0;line-height:1.5">linear-gradient(160deg, #02122C 0%, #00051E 55%, #010E20 100%)</code></div>
+    </div>
+    <div style="display:flex;flex-direction:column;border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,0.08);background:#010C20">
+      <div style="height:160px;display:flex;align-items:center;justify-content:center;background:#00051E">
+        <div style="width:96px;height:120px;padding:2px;border-radius:14px;background:linear-gradient(180deg,#00E1EC 0%,#00FFC4 18%,#183C78 55%,#3C609C 100%);box-shadow:0 0 24px rgba(0,225,236,0.25)"><div style="width:100%;height:100%;border-radius:12px;background:#010C20"></div></div>
+      </div>
+      <div style="padding:14px 16px;display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Leuchtrahmen des Badges · 2px</span><code style="font-size:12px;color:#A9B6D0;line-height:1.5">linear-gradient(180deg, #00E1EC 0%, #00FFC4 18%, #183C78 55%, #3C609C 100%)</code></div>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;font-weight:600;letter-spacing:0.22em;color:#00FFC4">02</span><h2 style="margin:0;font-family:Sora,Inter,sans-serif;font-size:32px;font-weight:700">Typografie</h2></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr));gap:16px">
+    <div style="padding:28px;border-radius:16px;background:#010C20;border:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:Sora,Inter,sans-serif;font-size:64px;font-weight:800;line-height:1">Sora</span>
+      <span style="font-size:14px;color:#A9B6D0">Titel und Teilnehmername · 700 / 800</span>
+    </div>
+    <div style="padding:28px;border-radius:16px;background:#010C20;border:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;gap:10px">
+      <span style="font-family:Inter,sans-serif;font-size:64px;font-weight:500;line-height:1">Inter</span>
+      <span style="font-size:14px;color:#A9B6D0">Fließtext, Fragen, Antworten · 400 / 500 / 600</span>
+    </div>
+  </div>
+  <div style="display:flex;flex-direction:column;border-top:1px solid #183C78">
+    <div style="display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid #183C78">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Name</span><code style="font-size:12px;color:#A9B6D0">Sora 92 / 700</code></div>
+      <span style="font-family:Sora,Inter,sans-serif;font-size:clamp(44px,8vw,92px);font-weight:700;line-height:1.05;letter-spacing:-0.02em">Denise Assis</span>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid #183C78">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Profil</span><code style="font-size:12px;color:#A9B6D0">Sora 46 / 700 · mint</code></div>
+      <span style="font-family:Sora,Inter,sans-serif;font-size:clamp(28px,4.5vw,46px);font-weight:700;line-height:1.1;color:#00FFC4">DevOps &amp; Automatisierung</span>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid #183C78">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Eyebrow</span><code style="font-size:12px;color:#A9B6D0">Inter 22 / 600 · 0.22em · Versalien</code></div>
+      <span style="font-size:22px;font-weight:600;letter-spacing:0.22em;color:#00FFC4">TEILNEHMER</span>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid #183C78">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Radar-Label</span><code style="font-size:12px;color:#A9B6D0">Inter 20 / 600</code></div>
+      <span style="font-size:20px;font-weight:600">Multicloud · DevOps · Security · FinOps · Daten &amp; KI</span>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid #183C78">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Fließtext</span><code style="font-size:12px;color:#A9B6D0">Inter 18 / 400 · muted</code></div>
+      <span style="font-size:18px;line-height:1.55;color:#A9B6D0;max-width:620px;text-wrap:pretty">Dein Team muss eine Anwendung in drei Regionen bereitstellen. Womit fängst du an?</span>
+    </div>
+    <div style="display:grid;grid-template-columns:minmax(0,200px) minmax(0,1fr);gap:24px;align-items:center;padding:28px 0;border-bottom:1px solid #183C78">
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:14px;font-weight:600">Vertikaltext</span><code style="font-size:12px;color:#A9B6D0">Inter 14 · 0.3em · aqua · −90°</code></div>
+      <span style="font-size:14px;letter-spacing:0.3em;color:#44FDD5">BUILD A BRIGHTER TOMORROW</span>
+    </div>
+  </div>
+</section>
+
+<section style="display:flex;flex-direction:column;gap:28px">
+  <div style="display:flex;align-items:baseline;gap:16px"><span style="font-size:14px;font-weight:600;letter-spacing:0.22em;color:#00FFC4">03</span><h2 style="margin:0;font-family:Sora,Inter,sans-serif;font-size:32px;font-weight:700">Dimensionen</h2></div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px">
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:20px;padding:28px 24px;border-radius:16px;background:#010C20;border:1px solid rgba(0,226,255,0.3)">
+      <div style="width:56px;height:56px;background:#00E2FF;-webkit-mask:url(https://unpkg.com/lucide-static@0.460.0/icons/cloud.svg) center/contain no-repeat;mask:url(https://unpkg.com/lucide-static@0.460.0/icons/cloud.svg) center/contain no-repeat;filter:drop-shadow(0 0 10px rgba(0,226,255,0.5))"></div>
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:18px;font-weight:600">Multicloud</span><span style="font-size:13px;color:#00E2FF;font-weight:600">#00E2FF · Wolke</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:20px;padding:28px 24px;border-radius:16px;background:#010C20;border:1px solid rgba(0,255,196,0.3)">
+      <div style="width:56px;height:56px;background:#00FFC4;-webkit-mask:url(https://unpkg.com/lucide-static@0.460.0/icons/settings.svg) center/contain no-repeat;mask:url(https://unpkg.com/lucide-static@0.460.0/icons/settings.svg) center/contain no-repeat"></div>
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:18px;font-weight:600">DevOps &amp; Automatisierung</span><span style="font-size:13px;color:#00FFC4;font-weight:600">#00FFC4 · Zahnrad</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:20px;padding:28px 24px;border-radius:16px;background:#010C20;border:1px solid rgba(255,39,45,0.3)">
+      <div style="width:56px;height:56px;background:#FF272D;-webkit-mask:url(https://unpkg.com/lucide-static@0.460.0/icons/shield.svg) center/contain no-repeat;mask:url(https://unpkg.com/lucide-static@0.460.0/icons/shield.svg) center/contain no-repeat"></div>
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:18px;font-weight:600">Security</span><span style="font-size:13px;color:#FF6A6E;font-weight:600">#FF272D · Schild</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:20px;padding:28px 24px;border-radius:16px;background:#010C20;border:1px solid rgba(255,232,116,0.3)">
+      <div style="width:56px;height:56px;background:#FFE874;-webkit-mask:url(https://unpkg.com/lucide-static@0.460.0/icons/database.svg) center/contain no-repeat;mask:url(https://unpkg.com/lucide-static@0.460.0/icons/database.svg) center/contain no-repeat"></div>
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:18px;font-weight:600">FinOps</span><span style="font-size:13px;color:#FFE874;font-weight:600">#FFE874 · Münzstapel</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;align-items:flex-start;gap:20px;padding:28px 24px;border-radius:16px;background:#010C20;border:1px solid rgba(169,81,248,0.35)">
+      <div style="width:56px;height:56px;background:#A951F8;-webkit-mask:url(https://unpkg.com/lucide-static@0.460.0/icons/brain-circuit.svg) center/contain no-repeat;mask:url(https://unpkg.com/lucide-static@0.460.0/icons/brain-circuit.svg) center/contain no-repeat"></div>
+      <div style="display:flex;flex-direction:column;gap:4px"><span style="font-size:18px;font-weight:600">Daten &amp; KI</span><span style="font-size:13px;color:#C08BFA;font-weight:600">#A951F8 · Gehirn</span></div>
+    </div>
+  </div>
+</section>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    return { groups: [
+      { title: 'BASIS · HINTERGRÜNDE', items: [
+        { token: '--tcb-navy-900', hex: '#00051E', use: 'Tiefstes Blau (Logo)' },
+        { token: '--tcb-navy-800', hex: '#010C20', use: 'Karten- / Panelhintergrund' },
+        { token: '--tcb-navy-700', hex: '#02122C', use: 'Seitenhintergrund' },
+        { token: '--tcb-navy-600', hex: '#0A1F3D', use: 'Flächen, Inputs, Hover' },
+        { token: '--tcb-navy-500', hex: '#183C78', use: 'Skyline, Radarraster, Ränder' } ] },
+      { title: 'AKZENT · IDENTITÄT', items: [
+        { token: '--tcb-green', hex: '#00FF95', use: 'Logo-Grün · Primär, CTA' },
+        { token: '--tcb-mint', hex: '#00FFC4', use: 'Highlights, Fortschritt, Radar' },
+        { token: '--tcb-aqua', hex: '#44FDD5', use: 'Radarlinien, Leuchtkonturen' },
+        { token: '--tcb-cyan', hex: '#00E1EC', use: 'Start des Leuchtrahmens' },
+        { token: '--tcb-teal', hex: '#00B490', use: 'Hügel, Dekoration' },
+        { token: '--tcb-teal-deep', hex: '#008484', use: 'Tiefe, farbige Schatten' },
+        { token: '--tcb-red', hex: '#DF2622', use: 'Nur Logo und Security-Icon' } ] },
+      { title: 'TEXT', items: [
+        { token: '--text-primary', hex: '#FFFFFF', use: 'Name, Titel' },
+        { token: '--text-muted', hex: '#A9B6D0', use: 'Labels, Bildunterschriften' },
+        { token: '--text-accent', hex: '#00FFC4', use: '„TEILNEHMER“, Hauptprofil' } ] }
+    ] };
+  }
+}
+</script>
+</body>
+</html>
