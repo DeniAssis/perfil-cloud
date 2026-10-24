@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Testes de pontuação</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 24px; background: #00051E; color: #FFFFFF; }
+  li { margin: 6px 0; }
+  .ok { color: #00FF95; }
+  .falhou { color: #FF272D; }
+  code { color: #A9B6D0; }
+</style>
+</head>
+<body>
+<!-- Abrir via servidor local: http://127.0.0.1:8000/tests/scoring.test.html -->
+<h1 id="resumo">rodando…</h1>
+<ol id="casos"></ol>
+<script type="module">
+import { calcularResultado } from '../src/scoring.js';
+
+const dados = await fetch('../data/perguntas.json').then((r) => r.json());
+const dims = Object.keys(dados.dimensoes);
+const lista = document.getElementById('casos');
+let falhas = 0;
+
+function caso(nome, fn) {
+  let detalhe = '';
+  let ok;
+  try {
+    detalhe = fn() || '';
+    ok = true;
+  } catch (e) {
+    ok = false;
+    detalhe = e.message;
+  }
+  if (!ok) falhas++;
+  const li = document.createElement('li');
+  li.innerHTML = `<strong class="${ok ? 'ok' : 'falhou'}">${ok ? 'OK' : 'FALHOU'}</strong> ${nome} <code></code>`;
+  li.querySelector('code').textContent = detalhe;
+  lista.append(li);
+}
+
+function igual(atual, esperado, rotulo) {
+  const a = JSON.stringify(atual);
+  const e = JSON.stringify(esperado);
+  if (a !== e) throw new Error(`${rotulo}: esperado ${e}, obtido ${a}`);
+}
+
+// Monta uma lista de respostas a partir de { dim: quantidade }.
+const respostas = (mapa) => Object.entries(mapa).flatMap(([d, n]) => Array(n).fill(d));
+
+caso('1. Cada uma das 5 dimensões aparece exatamente 8 vezes no perguntas.json', () => {
+  igual(dims.length, 5, 'número de dimensões');
+  const contagem = Object.fromEntries(dims.map((d) => [d, 0]));
+  for (const p of dados.perguntas) for (const o of p.opcoes) contagem[o.dim]++;
+  igual(contagem, Object.fromEntries(dims.map((d) => [d, 8])), 'contagem');
+  return JSON.stringify(contagem);
+});
+
+caso('2. Nenhuma pergunta tem duas alternativas da mesma dimensão', () => {
+  for (const p of dados.perguntas) {
+    const vistas = p.opcoes.map((o) => o.dim);
+    if (new Set(vistas).size !== vistas.length) throw new Error(`${p.id} repete dimensão: ${vistas.join(', ')}`);
+  }
+  return `${dados.perguntas.length} perguntas verificadas`;
+});
+
+caso('3. Responder sempre DevOps produz DevOps 8 e todas as outras 0', () => {
+  const escolhidas = dados.perguntas.map((p) => p.opcoes.find((o) => o.dim === 'devops').dim);
+  const r = calcularResultado(dims, escolhidas);
+  igual(r.pontos, { multicloud: 0, devops: 8, security: 0, finops: 0, data_ai: 0 }, 'pontos');
+  igual(r.percentuais.devops, 100, 'percentual DevOps');
+  igual(r.principal, 'devops', 'principal');
+  igual(r.hibrido, false, 'hibrido');
+  return JSON.stringify(r.pontos);
+});
+
+caso('4. DevOps 4, Dados & IA 2, Security 1, Multicloud 1, FinOps 0 → principal DevOps, sem complementar', () => {
+  const r = calcularResultado(dims, respostas({ devops: 4, data_ai: 2, security: 1, multicloud: 1 }));
+  igual(r.principal, 'devops', 'principal');
+  igual(r.complementares, [], 'complementares');
+  igual(r.hibrido, false, 'hibrido');
+  igual(r.percentuais, { multicloud: 13, devops: 50, security: 13, finops: 0, data_ai: 25 }, 'percentuais');
+  return JSON.stringify(r.pontos);
+});
+
+caso('5. Empate 4-4 entre duas dimensões produz hibrido: true', () => {
+  const r = calcularResultado(dims, respostas({ security: 4, finops: 4 }));
+  igual(r.hibrido, true, 'hibrido');
+  igual(r.empatadas, ['security', 'finops'], 'empatadas');
+  igual(r.principal, null, 'principal');
+  return JSON.stringify(r.empatadas);
+});
+
+caso('Extra: segundo colocado a 1 ponto vira complementar', () => {
+  const r = calcularResultado(dims, respostas({ devops: 3, multicloud: 2, security: 1, finops: 1, data_ai: 1 }));
+  igual(r.principal, 'devops', 'principal');
+  igual(r.complementares, ['multicloud'], 'complementares');
+});
+
+caso('Extra: empate no segundo lugar a 1 ponto lista todas as empatadas', () => {
+  const r = calcularResultado(dims, respostas({ data_ai: 3, finops: 2, security: 2, multicloud: 1 }));
+  igual(r.principal, 'data_ai', 'principal');
+  igual(r.complementares, ['security', 'finops'], 'complementares');
+});
+
+caso('Extra: dimensão desconhecida gera erro', () => {
+  let erro = null;
+  try { calcularResultado(dims, ['cloud']); } catch (e) { erro = e; }
+  if (!erro) throw new Error('nenhum erro lançado');
+});
+
+const total = lista.children.length;
+const resumo = falhas ? `FALHOU: ${falhas} de ${total}` : `OK: ${total} de ${total}`;
+document.getElementById('resumo').textContent = resumo;
+document.title = resumo;
+</script>
+</body>
+</html>
