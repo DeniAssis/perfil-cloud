@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Testes do crachá</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 24px; background: #00051E; color: #FFFFFF; }
+  li { margin: 6px 0; }
+  .ok { color: #00FF95; }
+  .falhou { color: #FF272D; }
+  code { color: #A9B6D0; }
+  .pngs { display: flex; flex-wrap: wrap; gap: 16px; }
+  .pngs figure { margin: 0; width: 324px; }
+  .pngs img { width: 100%; display: block; }
+</style>
+</head>
+<body>
+<!-- Abrir via servidor local: http://127.0.0.1:8000/tests/cracha.test.html (?baixar=1 baixa os PNGs) -->
+<h1 id="resumo">rodando…</h1>
+<ol id="casos"></ol>
+<div class="pngs" id="pngs"></div>
+<script type="module">
+import { calcularResultado } from '../src/scoring.js';
+import { montarCrachaSvg, gerarPng, nomeArquivo, baixarArquivo, LARGURA, ALTURA } from '../src/badge.js';
+
+const dados = await fetch('../data/perguntas.json').then((r) => r.json());
+const dims = Object.keys(dados.dimensoes);
+const lista = document.getElementById('casos');
+const baixar = new URLSearchParams(location.search).has('baixar');
+let falhas = 0;
+
+async function caso(nome, fn) {
+  let ok = true;
+  let detalhe = '';
+  try {
+    detalhe = (await fn()) || '';
+  } catch (e) {
+    ok = false;
+    detalhe = e.message;
+    falhas++;
+  }
+  const li = document.createElement('li');
+  li.innerHTML = `<strong class="${ok ? 'ok' : 'falhou'}">${ok ? 'OK' : 'FALHOU'}</strong> ${nome} <code></code>`;
+  li.querySelector('code').textContent = detalhe;
+  lista.append(li);
+}
+
+const igual = (a, e, rotulo) => {
+  if (a !== e) throw new Error(`${rotulo}: esperado ${JSON.stringify(e)}, obtido ${JSON.stringify(a)}`);
+};
+const respostas = (mapa) => Object.entries(mapa).flatMap(([d, n]) => Array(n).fill(d));
+
+async function mostrar(blob, legenda) {
+  const fig = document.createElement('figure');
+  fig.innerHTML = `<img alt=""><figcaption></figcaption>`;
+  fig.querySelector('img').src = await comoDataUrl(blob);
+  fig.querySelector('figcaption').textContent = legenda;
+  document.getElementById('pngs').append(fig);
+}
+
+const comoDataUrl = (blob) =>
+  new Promise((ok, erro) => {
+    const leitor = new FileReader();
+    leitor.onload = () => ok(leitor.result);
+    leitor.onerror = () => erro(leitor.error);
+    leitor.readAsDataURL(blob);
+  });
+
+// Data URL + canvas: no Chrome headless com tempo virtual, blob: e createImageBitmap não resolvem.
+async function pixels(blob) {
+  const img = new Image();
+  img.src = await comoDataUrl(blob);
+  await img.decode();
+  const c = document.createElement('canvas');
+  c.width = img.naturalWidth;
+  c.height = img.naturalHeight;
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(img, 0, 0);
+  return { largura: img.naturalWidth, altura: img.naturalHeight, ctx };
+}
+
+const exemplos = {
+  rafael: {
+    nome: 'Rafael Souza',
+    resultado: calcularResultado(dims, respostas({ devops: 4, multicloud: 2, data_ai: 1, security: 1 })),
+    dimensoes: dados.dimensoes,
+  },
+  longo: {
+    nome: 'Maria Conceição de Albuquerque Figueiredo',
+    resultado: calcularResultado(dims, respostas({ security: 3, finops: 3, multicloud: 1, data_ai: 1 })),
+    dimensoes: dados.dimensoes,
+  },
+};
+const pngs = {};
+
+await caso('Nome do arquivo segue cracha-hands-on-project-day-2026-<slug>.png', () => {
+  igual(nomeArquivo('Rafael Souza'), 'cracha-hands-on-project-day-2026-rafael-souza.png', 'simples');
+  igual(nomeArquivo("  Maria Conceição d'Ávila  "), 'cracha-hands-on-project-day-2026-maria-conceicao-d-avila.png', 'acentos');
+  igual(nomeArquivo('李 雷'), 'cracha-hands-on-project-day-2026-participante.png', 'sem latinos');
+  return nomeArquivo(exemplos.longo.nome);
+});
+
+for (const [chave, ex] of Object.entries(exemplos)) {
+  await caso(`PNG ${LARGURA}×${ALTURA} gerado com fontes embutidas (${ex.nome})`, async () => {
+    const svg = await montarCrachaSvg(ex);
+    if (!svg.includes('data:font/woff2;base64,')) throw new Error('SVG sem fontes embutidas');
+    pngs[chave] = await gerarPng(svg);
+    igual(pngs[chave].type, 'image/png', 'tipo');
+    const { largura, altura } = await pixels(pngs[chave]);
+    igual(`${largura}×${altura}`, `${LARGURA}×${ALTURA}`, 'dimensões');
+    await mostrar(pngs[chave], nomeArquivo(ex.nome));
+    return `${Math.round(svg.length / 1024)} KB de SVG, ${Math.round(pngs[chave].size / 1024)} KB de PNG`;
+  });
+}
+
+await caso('Sem fontes embutidas o nome sai diferente (prova de que o embutimento tem efeito)', async () => {
+  pngs.semFontes = await gerarPng(await montarCrachaSvg(exemplos.rafael, { embutirFontes: false }));
+  await mostrar(pngs.semFontes, 'controle: sem fontes embutidas');
+  const a = (await pixels(pngs.rafael)).ctx.getImageData(80, 388, 916, 100).data;
+  const b = (await pixels(pngs.semFontes)).ctx.getImageData(80, 388, 916, 100).data;
+  let diferentes = 0;
+  for (let i = 0; i < a.length; i += 4) if (Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]) > 60) diferentes++;
+  const pct = (100 * diferentes) / (a.length / 4);
+  if (pct < 1) throw new Error(`só ${pct.toFixed(2)}% dos pixels do nome mudaram`);
+  return `${pct.toFixed(1)}% dos pixels da área do nome diferem`;
+});
+
+if (baixar) {
+  baixarArquivo(pngs.rafael, nomeArquivo(exemplos.rafael.nome));
+  baixarArquivo(pngs.longo, nomeArquivo(exemplos.longo.nome));
+  baixarArquivo(pngs.semFontes, 'controle-sem-fontes-embutidas.png');
+}
+
+const total = lista.children.length;
+const resumo = falhas ? `FALHOU: ${falhas} de ${total}` : `OK: ${total} de ${total}`;
+document.getElementById('resumo').textContent = resumo;
+document.title = resumo;
+</script>
+</body>
+</html>
