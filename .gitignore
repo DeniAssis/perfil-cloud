@@ -1,0 +1,9 @@
+# Betriebssystem
+.DS_Store
+Thumbs.db
+
+# Abhängigkeiten (falls lokal z. B. `npx serve` Pakete ablegt)
+node_modules/
+
+# Lokale Claude-Code-Einstellungen
+.claude/settings.local.json
