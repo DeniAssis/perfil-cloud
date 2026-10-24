@@ -1,316 +1,316 @@
-// carregar, embaralhar, navegar
+// laden, mischen, navigieren, Ergebnis anzeigen
 
-import { calcularResultado } from './scoring.js';
-import { montarCrachaSvg, baixarCracha } from './badge.js';
+import { berechneErgebnis } from './scoring.js';
+import { erstelleBadgeSvg, badgeHerunterladen } from './badge.js';
 import { radarSvg } from './radar.js';
-import { desenharIcone } from './icones.js';
+import { zeichneIcon } from './icons.js';
 
-const CAMINHO_PERGUNTAS = './data/perguntas.json';
-const LETRAS = 'ABCDE';
+const PFAD_FRAGEN = './data/fragen.json';
+const BUCHSTABEN = 'ABCDE';
 
-// Estado da sessão. Fica só em memória: o campo `dim` de cada opção nunca
-// é escrito no DOM, nem como atributo, classe ou dataset.
-const estado = {
-  nome: '',
-  perguntas: [], // [{ texto, opcoes: [{ texto, dim }] }], opções já embaralhadas
-  respostas: [], // índice da opção escolhida em cada pergunta, ou null
-  atual: 0,
-  dimensoes: {}, // de perguntas.json: { chave: { nome, rotulo, cor } }
-  maximo: 8,
-  resultado: null,
-  sessao: 0, // muda a cada "Refazer"; descarta trabalho assíncrono da sessão anterior
+// Zustand der Sitzung. Er liegt nur im Speicher: Das Feld `dim` einer Option
+// wird nie ins DOM geschrieben, weder als Attribut noch als Klasse oder Dataset.
+const zustand = {
+  name: '',
+  fragen: [], // [{ text, optionen: [{ text, dim }] }], Optionen bereits gemischt
+  antworten: [], // Index der gewählten Option je Frage, oder null
+  aktuell: 0,
+  dimensionen: {}, // aus fragen.json: { schluessel: { name, kurzname, farbe } }
+  maximum: 8,
+  ergebnis: null,
+  sitzung: 0, // ändert sich bei jedem „Quiz wiederholen“; verwirft asynchrone Arbeit der alten Sitzung
 };
 
 const $ = (id) => document.getElementById(id);
 
-const telas = [$('tela-inicio'), $('tela-quiz'), $('tela-resultado')];
-const formInicio = $('form-inicio');
-const campoNome = $('nome');
-const btnComecar = $('btn-comecar');
-const inicioErro = $('inicio-erro');
-const progresso = $('quiz-progresso');
-const contadorAtual = $('quiz-atual');
-const contadorTotal = $('quiz-total');
-const titPergunta = $('quiz-pergunta');
-const listaOpcoes = $('quiz-opcoes');
-const btnVoltar = $('btn-voltar');
-const btnProxima = $('btn-proxima');
-const titResultado = $('resultado-titulo');
-const crachaPreview = $('cracha-preview');
-const btnBaixar = $('btn-baixar');
-const btnRefazer = $('btn-refazer');
-const resultadoErro = $('resultado-erro');
-const pillIcone = $('pill-icone');
-const pillRotulo = $('pill-rotulo');
-const pillPerfil = $('pill-perfil');
-const complementar = $('resultado-complementar');
-const radarPagina = $('radar-pagina');
-const listaPontos = $('resultado-pontos');
+const bildschirme = [$('bildschirm-start'), $('bildschirm-quiz'), $('bildschirm-ergebnis')];
+const startFormular = $('start-formular');
+const nameFeld = $('name');
+const btnStart = $('btn-start');
+const startFehler = $('start-fehler');
+const fortschritt = $('quiz-fortschritt');
+const zaehlerAktuell = $('quiz-aktuell');
+const zaehlerGesamt = $('quiz-gesamt');
+const frageTitel = $('quiz-frage');
+const optionenListe = $('quiz-optionen');
+const btnZurueck = $('btn-zurueck');
+const btnWeiter = $('btn-weiter');
+const ergebnisTitel = $('ergebnis-titel');
+const badgeVorschau = $('badge-vorschau');
+const btnDownload = $('btn-download');
+const btnWiederholen = $('btn-wiederholen');
+const ergebnisFehler = $('ergebnis-fehler');
+const pillIcon = $('pill-icon');
+const pillLabel = $('pill-label');
+const pillProfil = $('pill-profil');
+const ergaenzendText = $('ergebnis-ergaenzend');
+const radarSeite = $('radar-seite');
+const punkteListe = $('ergebnis-punkte');
 
-const dadosQuiz = fetch(CAMINHO_PERGUNTAS).then((resp) => {
-  if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-  return resp.json();
+const quizDaten = fetch(PFAD_FRAGEN).then((antwort) => {
+  if (!antwort.ok) throw new Error(`HTTP ${antwort.status}`);
+  return antwort.json();
 });
 
-// Fisher-Yates sobre uma cópia; não altera a lista original.
-function embaralhar(lista) {
-  const copia = lista.slice();
-  for (let i = copia.length - 1; i > 0; i--) {
+// Fisher-Yates auf einer Kopie; die Originalliste bleibt unverändert.
+function mischen(liste) {
+  const kopie = liste.slice();
+  for (let i = kopie.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [copia[i], copia[j]] = [copia[j], copia[i]];
+    [kopie[i], kopie[j]] = [kopie[j], kopie[i]];
   }
-  return copia;
+  return kopie;
 }
 
-const doisDigitos = (n) => String(n).padStart(2, '0');
+const zweistellig = (n) => String(n).padStart(2, '0');
 
-function nomeValido(nome) {
-  return nome.trim().split(/\s+/).length >= 2;
+function nameGueltig(name) {
+  return name.trim().split(/\s+/).length >= 2;
 }
 
-function mostrarTela(tela) {
-  for (const t of telas) t.hidden = t !== tela;
+function zeigeBildschirm(bildschirm) {
+  for (const b of bildschirme) b.hidden = b !== bildschirm;
   window.scrollTo(0, 0);
 }
 
-function iniciarQuiz(dados) {
-  // Embaralha a cada sessão: cada chamada gera uma nova ordem.
-  // `id` das opções é descartado; só `texto` e `dim` seguem para a memória.
-  estado.perguntas = dados.perguntas.map((p) => ({
-    texto: p.texto,
-    opcoes: embaralhar(p.opcoes).map((o) => ({ texto: o.texto, dim: o.dim })),
+function starteQuiz(daten) {
+  // Mischt in jeder Sitzung: Jeder Aufruf erzeugt eine neue Reihenfolge.
+  // Die `id` der Optionen wird verworfen; nur `text` und `dim` bleiben im Speicher.
+  zustand.fragen = daten.fragen.map((f) => ({
+    text: f.text,
+    optionen: mischen(f.optionen).map((o) => ({ text: o.text, dim: o.dim })),
   }));
-  estado.respostas = estado.perguntas.map(() => null);
-  estado.atual = 0;
-  estado.dimensoes = dados.dimensoes;
-  estado.maximo = dados.pontuacaoMaximaPorDimensao;
+  zustand.antworten = zustand.fragen.map(() => null);
+  zustand.aktuell = 0;
+  zustand.dimensionen = daten.dimensionen;
+  zustand.maximum = daten.maxPunkteProDimension;
 
-  progresso.replaceChildren(
-    ...estado.perguntas.map(() => {
-      const seg = document.createElement('span');
-      seg.className = 'progresso-segmento';
-      return seg;
+  fortschritt.replaceChildren(
+    ...zustand.fragen.map(() => {
+      const segment = document.createElement('span');
+      segment.className = 'fortschritt-segment';
+      return segment;
     }),
   );
-  progresso.setAttribute('aria-valuemax', estado.perguntas.length);
-  contadorTotal.textContent = doisDigitos(estado.perguntas.length);
+  fortschritt.setAttribute('aria-valuemax', zustand.fragen.length);
+  zaehlerGesamt.textContent = zweistellig(zustand.fragen.length);
 
-  mostrarTela($('tela-quiz'));
-  renderizarPergunta();
+  zeigeBildschirm($('bildschirm-quiz'));
+  zeigeFrage();
 }
 
-function renderizarPergunta() {
-  const i = estado.atual;
-  const total = estado.perguntas.length;
-  const pergunta = estado.perguntas[i];
-  const escolhida = estado.respostas[i];
+function zeigeFrage() {
+  const i = zustand.aktuell;
+  const gesamt = zustand.fragen.length;
+  const frage = zustand.fragen[i];
+  const gewaehlt = zustand.antworten[i];
 
-  [...progresso.children].forEach((seg, n) => {
-    seg.classList.toggle('is-feito', n < i);
-    seg.classList.toggle('is-atual', n === i);
+  [...fortschritt.children].forEach((segment, n) => {
+    segment.classList.toggle('ist-erledigt', n < i);
+    segment.classList.toggle('ist-aktuell', n === i);
   });
-  progresso.setAttribute('aria-valuenow', i + 1);
-  progresso.setAttribute('aria-label', `Frage ${i + 1} von ${total}`);
-  contadorAtual.textContent = doisDigitos(i + 1);
+  fortschritt.setAttribute('aria-valuenow', i + 1);
+  fortschritt.setAttribute('aria-label', `Frage ${i + 1} von ${gesamt}`);
+  zaehlerAktuell.textContent = zweistellig(i + 1);
 
-  titPergunta.textContent = pergunta.texto;
+  frageTitel.textContent = frage.text;
 
-  // Ponto crítico: cada botão recebe apenas a letra posicional e o texto.
-  // A ligação botão → opção (e portanto → dimensão) existe só na closure
-  // de `selecionar(n)`, que guarda o índice em `estado.respostas`.
-  listaOpcoes.replaceChildren(
-    ...pergunta.opcoes.map((opcao, n) => {
+  // Kritischer Punkt: Jeder Button bekommt nur den Positionsbuchstaben und den Text.
+  // Die Verbindung Button → Option (und damit → Dimension) existiert nur in der Closure
+  // von `waehle(n)`, die den Index in `zustand.antworten` speichert.
+  optionenListe.replaceChildren(
+    ...frage.optionen.map((option, n) => {
       const btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'opcao';
+      btn.className = 'option';
       btn.setAttribute('role', 'radio');
-      btn.setAttribute('aria-checked', String(n === escolhida));
-      btn.tabIndex = n === (escolhida ?? 0) ? 0 : -1;
+      btn.setAttribute('aria-checked', String(n === gewaehlt));
+      btn.tabIndex = n === (gewaehlt ?? 0) ? 0 : -1;
 
-      const letra = document.createElement('span');
-      letra.className = 'opcao-letra';
-      letra.textContent = LETRAS[n];
+      const buchstabe = document.createElement('span');
+      buchstabe.className = 'option-buchstabe';
+      buchstabe.textContent = BUCHSTABEN[n];
 
-      const texto = document.createElement('span');
-      texto.className = 'opcao-texto';
-      texto.textContent = opcao.texto;
+      const text = document.createElement('span');
+      text.className = 'option-text';
+      text.textContent = option.text;
 
-      btn.append(letra, texto);
-      btn.addEventListener('click', () => selecionar(n));
+      btn.append(buchstabe, text);
+      btn.addEventListener('click', () => waehle(n));
       return btn;
     }),
   );
 
-  btnProxima.textContent = i === total - 1 ? 'Zum Ergebnis' : 'Weiter';
-  atualizarProxima();
-  titPergunta.focus({ preventScroll: true });
+  btnWeiter.textContent = i === gesamt - 1 ? 'Zum Ergebnis' : 'Weiter';
+  aktualisiereWeiter();
+  frageTitel.focus({ preventScroll: true });
 }
 
-function selecionar(n, focar = false) {
-  estado.respostas[estado.atual] = n;
-  [...listaOpcoes.children].forEach((btn, k) => {
+function waehle(n, fokussieren = false) {
+  zustand.antworten[zustand.aktuell] = n;
+  [...optionenListe.children].forEach((btn, k) => {
     btn.setAttribute('aria-checked', String(k === n));
     btn.tabIndex = k === n ? 0 : -1;
-    if (focar && k === n) btn.focus();
+    if (fokussieren && k === n) btn.focus();
   });
-  atualizarProxima();
+  aktualisiereWeiter();
 }
 
-function atualizarProxima() {
-  btnProxima.disabled = estado.respostas[estado.atual] === null;
+function aktualisiereWeiter() {
+  btnWeiter.disabled = zustand.antworten[zustand.aktuell] === null;
 }
 
-// Setas movem e selecionam, como num grupo de rádio nativo.
-listaOpcoes.addEventListener('keydown', (e) => {
-  const passo = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
-  if (!passo) return;
+// Pfeiltasten bewegen und wählen, wie in einer nativen Radio-Gruppe.
+optionenListe.addEventListener('keydown', (e) => {
+  const schritt = { ArrowDown: 1, ArrowRight: 1, ArrowUp: -1, ArrowLeft: -1 }[e.key];
+  if (!schritt) return;
   e.preventDefault();
-  const total = listaOpcoes.children.length;
-  const atual = [...listaOpcoes.children].indexOf(document.activeElement);
-  selecionar((Math.max(atual, 0) + passo + total) % total, true);
+  const gesamt = optionenListe.children.length;
+  const aktuell = [...optionenListe.children].indexOf(document.activeElement);
+  waehle((Math.max(aktuell, 0) + schritt + gesamt) % gesamt, true);
 });
 
-btnVoltar.addEventListener('click', () => {
-  if (estado.atual === 0) {
-    mostrarTela($('tela-inicio'));
-    campoNome.focus();
+btnZurueck.addEventListener('click', () => {
+  if (zustand.aktuell === 0) {
+    zeigeBildschirm($('bildschirm-start'));
+    nameFeld.focus();
     return;
   }
-  estado.atual--;
-  renderizarPergunta();
+  zustand.aktuell--;
+  zeigeFrage();
 });
 
-btnProxima.addEventListener('click', () => {
-  if (estado.respostas[estado.atual] === null) return;
-  if (estado.atual < estado.perguntas.length - 1) {
-    estado.atual++;
-    renderizarPergunta();
+btnWeiter.addEventListener('click', () => {
+  if (zustand.antworten[zustand.aktuell] === null) return;
+  if (zustand.aktuell < zustand.fragen.length - 1) {
+    zustand.aktuell++;
+    zeigeFrage();
     return;
   }
-  mostrarResultado();
+  zeigeErgebnis();
 });
 
-// A partir daqui as dimensões podem aparecer no DOM: é a tela de resultado.
-async function mostrarResultado() {
-  const escolhidas = estado.respostas.map((n, i) => estado.perguntas[i].opcoes[n].dim);
-  estado.resultado = calcularResultado(Object.keys(estado.dimensoes), escolhidas, estado.maximo);
+// Ab hier dürfen Dimensionen im DOM erscheinen: Das ist der Ergebnisbildschirm.
+async function zeigeErgebnis() {
+  const gewaehlt = zustand.antworten.map((n, i) => zustand.fragen[i].optionen[n].dim);
+  zustand.ergebnis = berechneErgebnis(Object.keys(zustand.dimensionen), gewaehlt, zustand.maximum);
 
-  const { resultado, dimensoes } = estado;
-  const nomes = (lista) => lista.map((d) => dimensoes[d].nome);
-  const destaque = resultado.hibrido ? resultado.empatadas[0] : resultado.principal;
+  const { ergebnis, dimensionen } = zustand;
+  const namen = (liste) => liste.map((d) => dimensionen[d].name);
+  const hervorgehoben = ergebnis.hybrid ? ergebnis.gleichauf[0] : ergebnis.hauptprofil;
 
-  titResultado.textContent = resultado.hibrido ? 'Hybridprofil' : dimensoes[resultado.principal].nome;
-  pillIcone.innerHTML = desenharIcone(destaque, 0, 0, 40, dimensoes[destaque].cor);
-  pillRotulo.textContent = resultado.hibrido ? 'HYBRIDPROFIL' : 'BEREICH MIT DER HÖCHSTEN AFFINITÄT';
-  pillPerfil.textContent = resultado.hibrido ? nomes(resultado.empatadas).join(' + ') : dimensoes[resultado.principal].nome;
-  complementar.hidden = !resultado.complementares.length;
-  complementar.textContent = `Du hast auch Affinität gezeigt zu ${listaPorExtenso(nomes(resultado.complementares))}.`;
+  ergebnisTitel.textContent = ergebnis.hybrid ? 'Hybridprofil' : dimensionen[ergebnis.hauptprofil].name;
+  pillIcon.innerHTML = zeichneIcon(hervorgehoben, 0, 0, 40, dimensionen[hervorgehoben].farbe);
+  pillLabel.textContent = ergebnis.hybrid ? 'HYBRIDPROFIL' : 'BEREICH MIT DER HÖCHSTEN AFFINITÄT';
+  pillProfil.textContent = ergebnis.hybrid ? namen(ergebnis.gleichauf).join(' + ') : dimensionen[ergebnis.hauptprofil].name;
+  ergaenzendText.hidden = !ergebnis.ergaenzend.length;
+  ergaenzendText.textContent = `Du hast auch Affinität gezeigt zu ${aufzaehlung(namen(ergebnis.ergaenzend))}.`;
 
-  const eixos = Object.entries(dimensoes).map(([dim, d]) => ({
-    dim, rotulo: d.rotulo ?? d.nome, cor: d.cor, valor: resultado.pontos[dim],
+  const achsen = Object.entries(dimensionen).map(([dim, d]) => ({
+    dim, label: d.kurzname ?? d.name, farbe: d.farbe, wert: ergebnis.punkte[dim],
   }));
-  radarPagina.innerHTML =
+  radarSeite.innerHTML =
     `<svg viewBox="0 0 600 500" xmlns="http://www.w3.org/2000/svg">` +
-    radarSvg({ cx: 300, cy: 268, raio: 150, raioRotulo: 222, eixos, maximo: estado.maximo, prefixo: 'pg-radar' }) +
+    radarSvg({ cx: 300, cy: 268, radius: 150, labelRadius: 222, achsen, maximum: zustand.maximum, praefix: 'seite-radar' }) +
     `</svg>`;
-  radarPagina.setAttribute(
+  radarSeite.setAttribute(
     'aria-label',
-    `Affinitätsradar: ${eixos.map((e) => `${dimensoes[e.dim].nome} ${resultado.percentuais[e.dim]}%`).join(', ')}`,
+    `Affinitätsradar: ${achsen.map((a) => `${dimensionen[a.dim].name} ${ergebnis.prozente[a.dim]}%`).join(', ')}`,
   );
-  listaPontos.replaceChildren(
-    ...resultado.ranking.map((dim) => {
+  punkteListe.replaceChildren(
+    ...ergebnis.rangfolge.map((dim) => {
       const li = document.createElement('li');
-      const nome = document.createElement('span');
-      nome.className = 'pontos-nome';
-      nome.style.setProperty('--cor', dimensoes[dim].cor);
-      nome.textContent = dimensoes[dim].nome;
-      const valor = document.createElement('span');
-      valor.className = 'pontos-valor';
-      valor.textContent = `${resultado.pontos[dim]}/${estado.maximo} · ${resultado.percentuais[dim]}%`;
-      li.append(nome, valor);
+      const name = document.createElement('span');
+      name.className = 'punkte-name';
+      name.style.setProperty('--farbe', dimensionen[dim].farbe);
+      name.textContent = dimensionen[dim].name;
+      const wert = document.createElement('span');
+      wert.className = 'punkte-wert';
+      wert.textContent = `${ergebnis.punkte[dim]}/${zustand.maximum} · ${ergebnis.prozente[dim]}%`;
+      li.append(name, wert);
       return li;
     }),
   );
 
-  resultadoErro.hidden = true;
-  crachaPreview.replaceChildren();
-  mostrarTela($('tela-resultado'));
-  titResultado.focus();
+  ergebnisFehler.hidden = true;
+  badgeVorschau.replaceChildren();
+  zeigeBildschirm($('bildschirm-ergebnis'));
+  ergebnisTitel.focus();
 
-  const sessao = estado.sessao;
+  const sitzung = zustand.sitzung;
   try {
-    const svg = await montarCrachaSvg(dadosCracha(), { embutirFontes: false });
-    if (sessao === estado.sessao) crachaPreview.innerHTML = svg;
-  } catch (erro) {
-    console.error('Badge konnte nicht erstellt werden', erro);
-    resultadoErro.textContent = 'Das Badge konnte nicht erstellt werden. Bitte lade die Seite neu und versuche es erneut.';
-    resultadoErro.hidden = false;
+    const svg = await erstelleBadgeSvg(badgeDaten(), { schriftenEinbetten: false });
+    if (sitzung === zustand.sitzung) badgeVorschau.innerHTML = svg;
+  } catch (fehler) {
+    console.error('Badge konnte nicht erstellt werden', fehler);
+    ergebnisFehler.textContent = 'Das Badge konnte nicht erstellt werden. Bitte lade die Seite neu und versuche es erneut.';
+    ergebnisFehler.hidden = false;
   }
 }
 
-const dadosCracha = () => ({ nome: estado.nome, resultado: estado.resultado, dimensoes: estado.dimensoes });
+const badgeDaten = () => ({ name: zustand.name, ergebnis: zustand.ergebnis, dimensionen: zustand.dimensionen });
 
-const listaPorExtenso = (itens) =>
-  itens.length > 1 ? `${itens.slice(0, -1).join(', ')} und ${itens.at(-1)}` : itens.join('');
+const aufzaehlung = (eintraege) =>
+  eintraege.length > 1 ? `${eintraege.slice(0, -1).join(', ')} und ${eintraege.at(-1)}` : eintraege.join('');
 
-btnRefazer.addEventListener('click', () => {
-  estado.sessao++;
-  estado.nome = '';
-  estado.perguntas = []; // força novo embaralhamento no próximo início
-  estado.respostas = [];
-  estado.atual = 0;
-  estado.resultado = null;
-  crachaPreview.replaceChildren();
-  radarPagina.replaceChildren();
-  listaPontos.replaceChildren();
-  pillIcone.replaceChildren();
-  campoNome.value = '';
-  btnComecar.disabled = true;
-  mostrarTela($('tela-inicio'));
-  campoNome.focus();
+btnWiederholen.addEventListener('click', () => {
+  zustand.sitzung++;
+  zustand.name = '';
+  zustand.fragen = []; // erzwingt beim nächsten Start neues Mischen
+  zustand.antworten = [];
+  zustand.aktuell = 0;
+  zustand.ergebnis = null;
+  badgeVorschau.replaceChildren();
+  radarSeite.replaceChildren();
+  punkteListe.replaceChildren();
+  pillIcon.replaceChildren();
+  nameFeld.value = '';
+  btnStart.disabled = true;
+  zeigeBildschirm($('bildschirm-start'));
+  nameFeld.focus();
 });
 
-btnBaixar.addEventListener('click', async () => {
-  const rotulo = btnBaixar.textContent;
-  btnBaixar.disabled = true;
-  btnBaixar.textContent = 'Wird erstellt …';
-  resultadoErro.hidden = true;
+btnDownload.addEventListener('click', async () => {
+  const beschriftung = btnDownload.textContent;
+  btnDownload.disabled = true;
+  btnDownload.textContent = 'Wird erstellt …';
+  ergebnisFehler.hidden = true;
   try {
-    await baixarCracha(dadosCracha());
-  } catch (erro) {
-    console.error('PNG-Export fehlgeschlagen', erro);
-    resultadoErro.textContent = 'Das PNG konnte nicht erstellt werden. Bitte versuche es erneut.';
-    resultadoErro.hidden = false;
+    await badgeHerunterladen(badgeDaten());
+  } catch (fehler) {
+    console.error('PNG-Export fehlgeschlagen', fehler);
+    ergebnisFehler.textContent = 'Das PNG konnte nicht erstellt werden. Bitte versuche es erneut.';
+    ergebnisFehler.hidden = false;
   } finally {
-    btnBaixar.disabled = false;
-    btnBaixar.textContent = rotulo;
+    btnDownload.disabled = false;
+    btnDownload.textContent = beschriftung;
   }
 });
 
-campoNome.addEventListener('input', () => {
-  btnComecar.disabled = !nomeValido(campoNome.value);
-  inicioErro.hidden = true;
+nameFeld.addEventListener('input', () => {
+  btnStart.disabled = !nameGueltig(nameFeld.value);
+  startFehler.hidden = true;
 });
 
-formInicio.addEventListener('submit', async (e) => {
+startFormular.addEventListener('submit', async (e) => {
   e.preventDefault();
-  if (!nomeValido(campoNome.value)) return;
-  estado.nome = campoNome.value.trim().replace(/\s+/g, ' ');
+  if (!nameGueltig(nameFeld.value)) return;
+  zustand.name = nameFeld.value.trim().replace(/\s+/g, ' ');
 
-  // Voltar da 1ª pergunta e reenviar mantém as respostas já dadas.
-  if (estado.perguntas.length) {
-    mostrarTela($('tela-quiz'));
-    renderizarPergunta();
+  // Zurück von Frage 1 und erneut starten behält die bisherigen Antworten.
+  if (zustand.fragen.length) {
+    zeigeBildschirm($('bildschirm-quiz'));
+    zeigeFrage();
     return;
   }
-  btnComecar.disabled = true;
+  btnStart.disabled = true;
   try {
-    iniciarQuiz(await dadosQuiz);
-  } catch (erro) {
-    console.error('Fragen konnten nicht geladen werden', erro);
-    inicioErro.textContent = 'Die Fragen konnten nicht geladen werden. Bitte lade die Seite neu und versuche es erneut.';
-    inicioErro.hidden = false;
+    starteQuiz(await quizDaten);
+  } catch (fehler) {
+    console.error('Fragen konnten nicht geladen werden', fehler);
+    startFehler.textContent = 'Die Fragen konnten nicht geladen werden. Bitte lade die Seite neu und versuche es erneut.';
+    startFehler.hidden = false;
   } finally {
-    btnComecar.disabled = !nomeValido(campoNome.value);
+    btnStart.disabled = !nameGueltig(nameFeld.value);
   }
 });

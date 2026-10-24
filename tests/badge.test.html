@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Tests des Badges</title>
+<style>
+  body { font: 15px/1.5 system-ui, sans-serif; margin: 24px; background: #00051E; color: #FFFFFF; }
+  li { margin: 6px 0; }
+  .ok { color: #00FF95; }
+  .fehler { color: #FF272D; }
+  code { color: #A9B6D0; }
+  .pngs { display: flex; flex-wrap: wrap; gap: 16px; }
+  .pngs figure { margin: 0; width: 324px; }
+  .pngs img { width: 100%; display: block; }
+</style>
+</head>
+<body>
+<!-- Über den lokalen Server öffnen: http://127.0.0.1:8000/tests/badge.test.html (?herunterladen lädt die PNGs herunter) -->
+<h1 id="zusammenfassung">läuft …</h1>
+<ol id="faelle"></ol>
+<div class="pngs" id="pngs"></div>
+<script type="module">
+import { berechneErgebnis } from '../src/scoring.js';
+import { erstelleBadgeSvg, erzeugePng, dateiname, dateiHerunterladen, BREITE, HOEHE } from '../src/badge.js';
+
+const daten = await fetch('../data/fragen.json').then((r) => r.json());
+const dims = Object.keys(daten.dimensionen);
+const liste = document.getElementById('faelle');
+const herunterladen = new URLSearchParams(location.search).has('herunterladen');
+let fehlschlaege = 0;
+
+async function fall(name, fn) {
+  let ok = true;
+  let detail = '';
+  try {
+    detail = (await fn()) || '';
+  } catch (e) {
+    ok = false;
+    detail = e.message;
+    fehlschlaege++;
+  }
+  const li = document.createElement('li');
+  li.innerHTML = `<strong class="${ok ? 'ok' : 'fehler'}">${ok ? 'OK' : 'FEHLER'}</strong> ${name} <code></code>`;
+  li.querySelector('code').textContent = detail;
+  liste.append(li);
+}
+
+const gleich = (ist, soll, bezeichnung) => {
+  if (ist !== soll) throw new Error(`${bezeichnung}: erwartet ${JSON.stringify(soll)}, erhalten ${JSON.stringify(ist)}`);
+};
+const antworten = (zuordnung) => Object.entries(zuordnung).flatMap(([d, n]) => Array(n).fill(d));
+
+const alsDataUrl = (blob) =>
+  new Promise((ok, fehler) => {
+    const leser = new FileReader();
+    leser.onload = () => ok(leser.result);
+    leser.onerror = () => fehler(leser.error);
+    leser.readAsDataURL(blob);
+  });
+
+async function zeige(blob, beschriftung) {
+  const fig = document.createElement('figure');
+  fig.innerHTML = `<img alt=""><figcaption></figcaption>`;
+  fig.querySelector('img').src = await alsDataUrl(blob);
+  fig.querySelector('figcaption').textContent = beschriftung;
+  document.getElementById('pngs').append(fig);
+}
+
+// Data-URL + Canvas: In headless Chrome mit virtueller Zeit lösen blob: und createImageBitmap nie auf.
+async function pixel(blob) {
+  const bild = new Image();
+  bild.src = await alsDataUrl(blob);
+  await bild.decode();
+  const c = document.createElement('canvas');
+  c.width = bild.naturalWidth;
+  c.height = bild.naturalHeight;
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  ctx.drawImage(bild, 0, 0);
+  return { breite: bild.naturalWidth, hoehe: bild.naturalHeight, ctx };
+}
+
+const beispiele = {
+  denise: {
+    name: 'Denise Assis',
+    ergebnis: berechneErgebnis(dims, antworten({ devops: 4, multicloud: 2, data_ai: 1, security: 1 })),
+    dimensionen: daten.dimensionen,
+  },
+  lang: {
+    name: 'Anna-Lena Großmann-Schäfer von Hohenzollern',
+    ergebnis: berechneErgebnis(dims, antworten({ security: 3, finops: 3, multicloud: 1, data_ai: 1 })),
+    dimensionen: daten.dimensionen,
+  },
+};
+const pngs = {};
+
+await fall('Dateiname folgt badge-hands-on-project-day-2026-<slug>.png', () => {
+  gleich(dateiname('Denise Assis'), 'badge-hands-on-project-day-2026-denise-assis.png', 'einfach');
+  gleich(dateiname('  Jörg Großmann  '), 'badge-hands-on-project-day-2026-joerg-grossmann.png', 'Umlaute');
+  gleich(dateiname("Maria Conceição d'Ávila"), 'badge-hands-on-project-day-2026-maria-conceicao-d-avila.png', 'Akzente');
+  gleich(dateiname('李 雷'), 'badge-hands-on-project-day-2026-profil.png', 'ohne lateinische Zeichen');
+  return dateiname(beispiele.lang.name);
+});
+
+for (const [schluessel, b] of Object.entries(beispiele)) {
+  await fall(`PNG ${BREITE}×${HOEHE} mit eingebetteten Schriften erzeugt (${b.name})`, async () => {
+    const svg = await erstelleBadgeSvg(b);
+    if (!svg.includes('data:font/woff2;base64,')) throw new Error('SVG ohne eingebettete Schriften');
+    pngs[schluessel] = await erzeugePng(svg);
+    gleich(pngs[schluessel].type, 'image/png', 'Typ');
+    const { breite, hoehe } = await pixel(pngs[schluessel]);
+    gleich(`${breite}×${hoehe}`, `${BREITE}×${HOEHE}`, 'Abmessungen');
+    await zeige(pngs[schluessel], dateiname(b.name));
+    return `${Math.round(svg.length / 1024)} KB SVG, ${Math.round(pngs[schluessel].size / 1024)} KB PNG`;
+  });
+}
+
+await fall('Ohne eingebettete Schriften sieht der Name anders aus (Beweis, dass die Einbettung wirkt)', async () => {
+  pngs.ohneSchriften = await erzeugePng(await erstelleBadgeSvg(beispiele.denise, { schriftenEinbetten: false }));
+  await zeige(pngs.ohneSchriften, 'Kontrolle: ohne eingebettete Schriften');
+  const a = (await pixel(pngs.denise)).ctx.getImageData(80, 388, 916, 100).data;
+  const b = (await pixel(pngs.ohneSchriften)).ctx.getImageData(80, 388, 916, 100).data;
+  let verschieden = 0;
+  for (let i = 0; i < a.length; i += 4) if (Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]) > 60) verschieden++;
+  const anteil = (100 * verschieden) / (a.length / 4);
+  if (anteil < 1) throw new Error(`nur ${anteil.toFixed(2)} % der Pixel im Namen haben sich geändert`);
+  return `${anteil.toFixed(1)} % der Pixel im Namensbereich unterscheiden sich`;
+});
+
+if (herunterladen) {
+  dateiHerunterladen(pngs.denise, dateiname(beispiele.denise.name));
+  dateiHerunterladen(pngs.lang, dateiname(beispiele.lang.name));
+  dateiHerunterladen(pngs.ohneSchriften, 'kontrolle-ohne-eingebettete-schriften.png');
+}
+
+const gesamt = liste.children.length;
+const zusammenfassung = fehlschlaege ? `FEHLER: ${fehlschlaege} von ${gesamt}` : `OK: ${gesamt} von ${gesamt}`;
+document.getElementById('zusammenfassung').textContent = zusammenfassung;
+document.title = zusammenfassung;
+</script>
+</body>
+</html>

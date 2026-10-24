@@ -7,113 +7,113 @@
   body { font: 15px/1.5 system-ui, sans-serif; margin: 24px; background: #00051E; color: #FFFFFF; }
   li { margin: 6px 0; }
   .ok { color: #00FF95; }
-  .falhou { color: #FF272D; }
+  .fehler { color: #FF272D; }
   code { color: #A9B6D0; }
 </style>
 </head>
 <body>
 <!-- Über den lokalen Server öffnen: http://127.0.0.1:8000/tests/scoring.test.html -->
-<h1 id="resumo">läuft …</h1>
-<ol id="casos"></ol>
+<h1 id="zusammenfassung">läuft …</h1>
+<ol id="faelle"></ol>
 <script type="module">
-import { calcularResultado } from '../src/scoring.js';
+import { berechneErgebnis } from '../src/scoring.js';
 
-const dados = await fetch('../data/perguntas.json').then((r) => r.json());
-const dims = Object.keys(dados.dimensoes);
-const lista = document.getElementById('casos');
-let falhas = 0;
+const daten = await fetch('../data/fragen.json').then((r) => r.json());
+const dims = Object.keys(daten.dimensionen);
+const liste = document.getElementById('faelle');
+let fehlschlaege = 0;
 
-function caso(nome, fn) {
-  let detalhe = '';
+function fall(name, fn) {
+  let detail = '';
   let ok;
   try {
-    detalhe = fn() || '';
+    detail = fn() || '';
     ok = true;
   } catch (e) {
     ok = false;
-    detalhe = e.message;
+    detail = e.message;
   }
-  if (!ok) falhas++;
+  if (!ok) fehlschlaege++;
   const li = document.createElement('li');
-  li.innerHTML = `<strong class="${ok ? 'ok' : 'falhou'}">${ok ? 'OK' : 'FEHLER'}</strong> ${nome} <code></code>`;
-  li.querySelector('code').textContent = detalhe;
-  lista.append(li);
+  li.innerHTML = `<strong class="${ok ? 'ok' : 'fehler'}">${ok ? 'OK' : 'FEHLER'}</strong> ${name} <code></code>`;
+  li.querySelector('code').textContent = detail;
+  liste.append(li);
 }
 
-function igual(atual, esperado, rotulo) {
-  const a = JSON.stringify(atual);
-  const e = JSON.stringify(esperado);
-  if (a !== e) throw new Error(`${rotulo}: erwartet ${e}, erhalten ${a}`);
+function gleich(ist, soll, bezeichnung) {
+  const a = JSON.stringify(ist);
+  const e = JSON.stringify(soll);
+  if (a !== e) throw new Error(`${bezeichnung}: erwartet ${e}, erhalten ${a}`);
 }
 
 // Baut eine Antwortliste aus { dim: Anzahl }.
-const respostas = (mapa) => Object.entries(mapa).flatMap(([d, n]) => Array(n).fill(d));
+const antworten = (zuordnung) => Object.entries(zuordnung).flatMap(([d, n]) => Array(n).fill(d));
 
-caso('1. Jede der 5 Dimensionen kommt in perguntas.json genau 8-mal vor', () => {
-  igual(dims.length, 5, 'Anzahl der Dimensionen');
-  const contagem = Object.fromEntries(dims.map((d) => [d, 0]));
-  for (const p of dados.perguntas) for (const o of p.opcoes) contagem[o.dim]++;
-  igual(contagem, Object.fromEntries(dims.map((d) => [d, 8])), 'Zählung');
-  return JSON.stringify(contagem);
+fall('1. Jede der 5 Dimensionen kommt in fragen.json genau 8-mal vor', () => {
+  gleich(dims.length, 5, 'Anzahl der Dimensionen');
+  const zaehlung = Object.fromEntries(dims.map((d) => [d, 0]));
+  for (const f of daten.fragen) for (const o of f.optionen) zaehlung[o.dim]++;
+  gleich(zaehlung, Object.fromEntries(dims.map((d) => [d, 8])), 'Zählung');
+  return JSON.stringify(zaehlung);
 });
 
-caso('2. Keine Frage hat zwei Optionen derselben Dimension', () => {
-  for (const p of dados.perguntas) {
-    const vistas = p.opcoes.map((o) => o.dim);
-    if (new Set(vistas).size !== vistas.length) throw new Error(`${p.id} wiederholt eine Dimension: ${vistas.join(', ')}`);
+fall('2. Keine Frage hat zwei Optionen derselben Dimension', () => {
+  for (const f of daten.fragen) {
+    const gesehen = f.optionen.map((o) => o.dim);
+    if (new Set(gesehen).size !== gesehen.length) throw new Error(`${f.id} wiederholt eine Dimension: ${gesehen.join(', ')}`);
   }
-  return `${dados.perguntas.length} Fragen geprüft`;
+  return `${daten.fragen.length} Fragen geprüft`;
 });
 
-caso('3. Immer DevOps gewählt: DevOps 8, alle anderen 0', () => {
-  const escolhidas = dados.perguntas.map((p) => p.opcoes.find((o) => o.dim === 'devops').dim);
-  const r = calcularResultado(dims, escolhidas);
-  igual(r.pontos, { multicloud: 0, devops: 8, security: 0, finops: 0, data_ai: 0 }, 'Punkte');
-  igual(r.percentuais.devops, 100, 'Prozent DevOps');
-  igual(r.principal, 'devops', 'Hauptprofil');
-  igual(r.hibrido, false, 'hibrido');
-  return JSON.stringify(r.pontos);
+fall('3. Immer DevOps gewählt: DevOps 8, alle anderen 0', () => {
+  const gewaehlt = daten.fragen.map((f) => f.optionen.find((o) => o.dim === 'devops').dim);
+  const e = berechneErgebnis(dims, gewaehlt);
+  gleich(e.punkte, { multicloud: 0, devops: 8, security: 0, finops: 0, data_ai: 0 }, 'Punkte');
+  gleich(e.prozente.devops, 100, 'Prozent DevOps');
+  gleich(e.hauptprofil, 'devops', 'Hauptprofil');
+  gleich(e.hybrid, false, 'hybrid');
+  return JSON.stringify(e.punkte);
 });
 
-caso('4. DevOps 4, Daten & KI 2, Security 1, Multicloud 1, FinOps 0 → Hauptprofil DevOps, kein ergänzendes Profil', () => {
-  const r = calcularResultado(dims, respostas({ devops: 4, data_ai: 2, security: 1, multicloud: 1 }));
-  igual(r.principal, 'devops', 'Hauptprofil');
-  igual(r.complementares, [], 'ergänzende Profile');
-  igual(r.hibrido, false, 'hibrido');
-  igual(r.percentuais, { multicloud: 13, devops: 50, security: 13, finops: 0, data_ai: 25 }, 'Prozentwerte');
-  return JSON.stringify(r.pontos);
+fall('4. DevOps 4, Daten & KI 2, Security 1, Multicloud 1, FinOps 0 → Hauptprofil DevOps, kein ergänzendes Profil', () => {
+  const e = berechneErgebnis(dims, antworten({ devops: 4, data_ai: 2, security: 1, multicloud: 1 }));
+  gleich(e.hauptprofil, 'devops', 'Hauptprofil');
+  gleich(e.ergaenzend, [], 'ergänzende Profile');
+  gleich(e.hybrid, false, 'hybrid');
+  gleich(e.prozente, { multicloud: 13, devops: 50, security: 13, finops: 0, data_ai: 25 }, 'Prozentwerte');
+  return JSON.stringify(e.punkte);
 });
 
-caso('5. Gleichstand 4:4 zwischen zwei Dimensionen ergibt hibrido: true', () => {
-  const r = calcularResultado(dims, respostas({ security: 4, finops: 4 }));
-  igual(r.hibrido, true, 'hibrido');
-  igual(r.empatadas, ['security', 'finops'], 'gleichauf');
-  igual(r.principal, null, 'Hauptprofil');
-  return JSON.stringify(r.empatadas);
+fall('5. Gleichstand 4:4 zwischen zwei Dimensionen ergibt hybrid: true', () => {
+  const e = berechneErgebnis(dims, antworten({ security: 4, finops: 4 }));
+  gleich(e.hybrid, true, 'hybrid');
+  gleich(e.gleichauf, ['security', 'finops'], 'gleichauf');
+  gleich(e.hauptprofil, null, 'Hauptprofil');
+  return JSON.stringify(e.gleichauf);
 });
 
-caso('Extra: Zweitplatzierter mit 1 Punkt Abstand wird ergänzendes Profil', () => {
-  const r = calcularResultado(dims, respostas({ devops: 3, multicloud: 2, security: 1, finops: 1, data_ai: 1 }));
-  igual(r.principal, 'devops', 'Hauptprofil');
-  igual(r.complementares, ['multicloud'], 'ergänzende Profile');
+fall('Extra: Zweitplatzierter mit 1 Punkt Abstand wird ergänzendes Profil', () => {
+  const e = berechneErgebnis(dims, antworten({ devops: 3, multicloud: 2, security: 1, finops: 1, data_ai: 1 }));
+  gleich(e.hauptprofil, 'devops', 'Hauptprofil');
+  gleich(e.ergaenzend, ['multicloud'], 'ergänzende Profile');
 });
 
-caso('Extra: Gleichstand auf Platz 2 mit 1 Punkt Abstand listet alle Gleichplatzierten', () => {
-  const r = calcularResultado(dims, respostas({ data_ai: 3, finops: 2, security: 2, multicloud: 1 }));
-  igual(r.principal, 'data_ai', 'Hauptprofil');
-  igual(r.complementares, ['security', 'finops'], 'ergänzende Profile');
+fall('Extra: Gleichstand auf Platz 2 mit 1 Punkt Abstand listet alle Gleichplatzierten', () => {
+  const e = berechneErgebnis(dims, antworten({ data_ai: 3, finops: 2, security: 2, multicloud: 1 }));
+  gleich(e.hauptprofil, 'data_ai', 'Hauptprofil');
+  gleich(e.ergaenzend, ['security', 'finops'], 'ergänzende Profile');
 });
 
-caso('Extra: Unbekannte Dimension löst einen Fehler aus', () => {
-  let erro = null;
-  try { calcularResultado(dims, ['cloud']); } catch (e) { erro = e; }
-  if (!erro) throw new Error('kein Fehler ausgelöst');
+fall('Extra: Unbekannte Dimension löst einen Fehler aus', () => {
+  let fehler = null;
+  try { berechneErgebnis(dims, ['cloud']); } catch (e) { fehler = e; }
+  if (!fehler) throw new Error('kein Fehler ausgelöst');
 });
 
-const total = lista.children.length;
-const resumo = falhas ? `FEHLER: ${falhas} von ${total}` : `OK: ${total} von ${total}`;
-document.getElementById('resumo').textContent = resumo;
-document.title = resumo;
+const gesamt = liste.children.length;
+const zusammenfassung = fehlschlaege ? `FEHLER: ${fehlschlaege} von ${gesamt}` : `OK: ${gesamt} von ${gesamt}`;
+document.getElementById('zusammenfassung').textContent = zusammenfassung;
+document.title = zusammenfassung;
 </script>
 </body>
 </html>

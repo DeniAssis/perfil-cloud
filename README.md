@@ -2,21 +2,21 @@
 
 Quiz für den **Hands-on Project Day 2026** von **The Cloud Bootcamp**. Teilnehmende beantworten 8 Fragen und erfahren ihr Cloud-Profil in fünf Dimensionen: Multicloud, DevOps & Automatisierung, Security, FinOps und Daten & KI. Am Ende erhalten sie ein persönliches virtuelles Badge als PNG (1080×1350), bereit zum Teilen auf LinkedIn.
 
-Die Oberfläche ist auf Deutsch. Die portugiesische Originalfassung der Fragen liegt in `artefatos/perguntas.json` (Pages-Dokument).
+Die Oberfläche ist auf Deutsch. Die portugiesischen Originale (Fragen und Design-Vorgaben) liegen als Pages-Dokumente in `ausgangsmaterial/`.
 
 ## Funktionen
 
 - 8 Fragen mit je 5 Antworten, deren Reihenfolge pro Frage und Sitzung gemischt wird
 - Ergebnis mit Hauptprofil, ergänzendem Profil bzw. Hybridprofil, Radar und Punkten je Dimension
-- Ausweis als SVG mit Download als PNG
+- Badge als SVG mit Download als PNG
 - Keine Daten verlassen den Browser: kein Backend, keine Analytics, keine Anfragen an Dritte
 
 ## Technik
 
 - HTML, CSS und Vanilla JavaScript (ES-Module), ohne Build-Schritt und ohne Abhängigkeiten
-- Grafiken (Radar, Ausweis) als von Hand geschriebenes SVG
+- Grafiken (Radar, Badge) als von Hand geschriebenes SVG
 - Schriften Sora und Inter selbst gehostet; für den PNG-Export werden sie als base64 in das SVG eingebettet
-- Quizinhalt ausschließlich in `data/perguntas.json`
+- Quizinhalt ausschließlich in `data/fragen.json`, Design-Vorgaben in `DESIGN.md`
 
 ## Lokal starten
 
@@ -34,9 +34,9 @@ Die Testseiten laufen direkt im Browser:
 
 | Seite | Prüft |
 |---|---|
-| `tests/scoring.test.html` | Punktevergabe, Gleichstandsregel und Integrität von `perguntas.json` |
-| `tests/sem-dim-no-dom.html` | Die Dimension einer Antwort gelangt vor dem Ergebnis nicht ins DOM |
-| `tests/cracha.test.html` | PNG-Export des Ausweises (mit `?baixar=1` werden die PNGs heruntergeladen) |
+| `tests/scoring.test.html` | Punktevergabe, Gleichstandsregel und Integrität von `fragen.json` |
+| `tests/dimension-nicht-im-dom.html` | Die Dimension einer Antwort gelangt vor dem Ergebnis nicht ins DOM |
+| `tests/badge.test.html` | PNG-Export des Badges (mit `?herunterladen` werden die PNGs heruntergeladen) |
 
 ## Veröffentlichung
 
@@ -51,11 +51,12 @@ Die App wird über **GitHub Pages** veröffentlicht, direkt aus dem Branch `main
 
 ```
 index.html
+DESIGN.md    Design-Vorgaben (Farben, Typografie, Komponenten)
 assets/      Logo und Schriften
-data/        perguntas.json
-src/         styles.css, quiz.js, scoring.js, radar.js, badge.js, icones.js
+data/        fragen.json
+src/         styles.css, quiz.js, scoring.js, radar.js, badge.js, icons.js
 tests/       Testseiten für den Browser
-artefatos/   Ausgangsmaterial (Ausweis-Vorlage, Logo, Pages-Dokumente)
+ausgangsmaterial/  Portugiesische Originale (Pages-Dokumente), Badge-Vorlage, Logo
 design-export/  Prototyp aus Claude Design, nur als Referenz
 ```
 

@@ -9,98 +9,98 @@
 </head>
 <body>
   <main>
-    <section id="tela-inicio" class="tela tela-inicio" aria-labelledby="inicio-titulo">
-      <div class="decor" aria-hidden="true">
-        <div class="decor-predios">
+    <section id="bildschirm-start" class="bildschirm bildschirm-start" aria-labelledby="start-titel">
+      <div class="deko" aria-hidden="true">
+        <div class="deko-gebaeude">
           <span style="--w:28px;--h:60px"></span>
           <span style="--w:40px;--h:110px"></span>
           <span style="--w:24px;--h:80px"></span>
           <span style="--w:46px;--h:140px"></span>
           <span style="--w:30px;--h:70px"></span>
         </div>
-        <span class="decor-colina decor-colina-1"></span>
-        <span class="decor-colina decor-colina-2"></span>
-        <span class="decor-colina decor-colina-3"></span>
-        <span class="decor-fade"></span>
+        <span class="deko-huegel deko-huegel-1"></span>
+        <span class="deko-huegel deko-huegel-2"></span>
+        <span class="deko-huegel deko-huegel-3"></span>
+        <span class="deko-verlauf"></span>
       </div>
 
-      <div class="inicio-conteudo">
-        <img class="inicio-logo" src="./assets/logo-tcb.svg" alt="The Cloud Bootcamp" width="211" height="87">
+      <div class="start-inhalt">
+        <img class="start-logo" src="./assets/logo-tcb.svg" alt="The Cloud Bootcamp" width="211" height="87">
 
-        <div class="inicio-cabecalho">
-          <p class="evento">
+        <div class="start-kopf">
+          <p class="event">
             <span class="eyebrow">HANDS-ON PROJECT DAY</span>
-            <span class="evento-divisor"></span>
-            <span class="evento-ano">2026</span>
+            <span class="event-trenner"></span>
+            <span class="event-jahr">2026</span>
           </p>
-          <h1 id="inicio-titulo" class="inicio-titulo" tabindex="-1">Welches Cloud-Profil bist du?</h1>
-          <p class="inicio-sub">8 Fragen, weniger als 3 Minuten.<br>Es gibt keine richtigen oder falschen Antworten.</p>
+          <h1 id="start-titel" class="start-titel" tabindex="-1">Welches Cloud-Profil bist du?</h1>
+          <p class="start-untertitel">8 Fragen, weniger als 3 Minuten.<br>Es gibt keine richtigen oder falschen Antworten.</p>
         </div>
 
-        <form id="form-inicio" class="form-inicio" novalidate>
-          <label for="nome" class="eyebrow eyebrow-muted">VOR- UND NACHNAME</label>
-          <input id="nome" name="nome" type="text" class="campo" autocomplete="name" placeholder="z. B. Denise Assis" maxlength="60" required>
-          <button id="btn-comecar" type="submit" class="btn btn-primario" disabled>Los geht's</button>
-          <p id="inicio-erro" class="erro" role="alert" hidden></p>
+        <form id="start-formular" class="start-formular" novalidate>
+          <label for="name" class="eyebrow eyebrow-gedaempft">VOR- UND NACHNAME</label>
+          <input id="name" name="name" type="text" class="eingabe" autocomplete="name" placeholder="z. B. Denise Assis" maxlength="60" required>
+          <button id="btn-start" type="submit" class="btn btn-primaer" disabled>Los geht's</button>
+          <p id="start-fehler" class="fehler" role="alert" hidden></p>
         </form>
       </div>
     </section>
 
-    <section id="tela-quiz" class="tela tela-quiz" aria-labelledby="quiz-pergunta" hidden>
+    <section id="bildschirm-quiz" class="bildschirm bildschirm-quiz" aria-labelledby="quiz-frage" hidden>
       <div class="quiz">
-        <header class="quiz-topo">
-          <div id="quiz-progresso" class="progresso" role="progressbar" aria-valuemin="1"></div>
+        <header class="quiz-kopf">
+          <div id="quiz-fortschritt" class="fortschritt" role="progressbar" aria-valuemin="1"></div>
           <div class="quiz-meta">
-            <span class="eyebrow eyebrow-muted">HANDS-ON PROJECT DAY</span>
-            <span class="contador"><span id="quiz-atual" class="contador-atual">01</span> / <span id="quiz-total">08</span></span>
+            <span class="eyebrow eyebrow-gedaempft">HANDS-ON PROJECT DAY</span>
+            <span class="zaehler"><span id="quiz-aktuell" class="zaehler-aktuell">01</span> / <span id="quiz-gesamt">08</span></span>
           </div>
         </header>
 
-        <h1 id="quiz-pergunta" class="quiz-pergunta" tabindex="-1"></h1>
+        <h1 id="quiz-frage" class="quiz-frage" tabindex="-1"></h1>
 
-        <div id="quiz-opcoes" class="opcoes" role="radiogroup" aria-labelledby="quiz-pergunta"></div>
+        <div id="quiz-optionen" class="optionen" role="radiogroup" aria-labelledby="quiz-frage"></div>
 
         <nav class="quiz-nav" aria-label="Quiz-Navigation">
-          <button id="btn-voltar" type="button" class="btn btn-secundario">Zurück</button>
-          <button id="btn-proxima" type="button" class="btn btn-primario" disabled>Weiter</button>
+          <button id="btn-zurueck" type="button" class="btn btn-sekundaer">Zurück</button>
+          <button id="btn-weiter" type="button" class="btn btn-primaer" disabled>Weiter</button>
         </nav>
       </div>
     </section>
 
-    <section id="tela-resultado" class="tela tela-resultado" aria-labelledby="resultado-titulo" hidden>
-      <div class="resultado">
-        <div class="resultado-perfil">
-          <p class="eyebrow eyebrow-muted">DEIN CLOUD-PROFIL IST</p>
-          <h1 id="resultado-titulo" class="resultado-titulo" tabindex="-1"></h1>
-          <div class="pill-afinidade">
-            <span id="pill-icone" class="pill-icone" aria-hidden="true"></span>
-            <span class="pill-divisor"></span>
-            <span class="pill-textos">
-              <span id="pill-rotulo" class="pill-rotulo"></span>
-              <span id="pill-perfil" class="pill-perfil"></span>
+    <section id="bildschirm-ergebnis" class="bildschirm bildschirm-ergebnis" aria-labelledby="ergebnis-titel" hidden>
+      <div class="ergebnis">
+        <div class="ergebnis-profil">
+          <p class="eyebrow eyebrow-gedaempft">DEIN CLOUD-PROFIL IST</p>
+          <h1 id="ergebnis-titel" class="ergebnis-titel" tabindex="-1"></h1>
+          <div class="pill-affinitaet">
+            <span id="pill-icon" class="pill-icon" aria-hidden="true"></span>
+            <span class="pill-trenner"></span>
+            <span class="pill-texte">
+              <span id="pill-label" class="pill-label"></span>
+              <span id="pill-profil" class="pill-profil"></span>
             </span>
           </div>
-          <p id="resultado-complementar" class="resultado-complementar" hidden></p>
+          <p id="ergebnis-ergaenzend" class="ergebnis-ergaenzend" hidden></p>
         </div>
 
-        <figure class="resultado-radar">
-          <div id="radar-pagina" class="radar-pagina" role="img"></div>
+        <figure class="ergebnis-radar">
+          <div id="radar-seite" class="radar-seite" role="img"></div>
           <figcaption>
-            <ul id="resultado-pontos" class="resultado-pontos"></ul>
+            <ul id="ergebnis-punkte" class="ergebnis-punkte"></ul>
           </figcaption>
         </figure>
 
-        <div class="resultado-cracha">
-          <div class="resultado-cracha-titulo">
-            <p class="eyebrow eyebrow-muted">DEIN VIRTUELLES BADGE</p>
+        <div class="ergebnis-badge">
+          <div class="ergebnis-badge-titel">
+            <p class="eyebrow eyebrow-gedaempft">DEIN VIRTUELLES BADGE</p>
             <h2>Teile es mit deinem Netzwerk</h2>
           </div>
-          <div id="cracha-preview" class="cracha-preview" role="img" aria-label="Vorschau des Badges"></div>
-          <div class="resultado-acoes">
-            <button id="btn-baixar" type="button" class="btn btn-primario">Badge herunterladen (PNG)</button>
-            <button id="btn-refazer" type="button" class="btn btn-secundario">Quiz wiederholen</button>
+          <div id="badge-vorschau" class="badge-vorschau" role="img" aria-label="Vorschau des Badges"></div>
+          <div class="ergebnis-aktionen">
+            <button id="btn-download" type="button" class="btn btn-primaer">Badge herunterladen (PNG)</button>
+            <button id="btn-wiederholen" type="button" class="btn btn-sekundaer">Quiz wiederholen</button>
           </div>
-          <p id="resultado-erro" class="erro" role="alert" hidden></p>
+          <p id="ergebnis-fehler" class="fehler" role="alert" hidden></p>
         </div>
       </div>
     </section>

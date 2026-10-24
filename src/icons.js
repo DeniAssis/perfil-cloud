@@ -1,7 +1,7 @@
-// Ícones das dimensões (Lucide v0.460.0, licença ISC — https://lucide.dev/license)
-// Embutidos como SVG para funcionar dentro do crachá exportado, sem fetch externo.
+// Icons der Dimensionen (Lucide v0.460.0, ISC-Lizenz — https://lucide.dev/license)
+// Als SVG eingebettet, damit sie im exportierten Badge ohne externen Abruf funktionieren.
 
-const TRACOS = {
+const PFADE = {
   multicloud: '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>',
   devops:
     '<path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/>' +
@@ -18,10 +18,10 @@ const TRACOS = {
     '<circle cx="16" cy="13" r=".5"/><circle cx="18" cy="3" r=".5"/><circle cx="20" cy="21" r=".5"/><circle cx="20" cy="8" r=".5"/>',
 };
 
-// Desenha o ícone da dimensão num quadrado de `tamanho` px com canto superior esquerdo em (x, y).
-export function desenharIcone(dim, x, y, tamanho, cor, atributos = '') {
+// Zeichnet das Icon der Dimension in ein Quadrat von `groesse` px mit linker oberer Ecke bei (x, y).
+export function zeichneIcon(dim, x, y, groesse, farbe, attribute = '') {
   return (
-    `<svg x="${x}" y="${y}" width="${tamanho}" height="${tamanho}" viewBox="0 0 24 24" fill="none" ` +
-    `stroke="${cor}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${atributos}>${TRACOS[dim]}</svg>`
+    `<svg x="${x}" y="${y}" width="${groesse}" height="${groesse}" viewBox="0 0 24 24" fill="none" ` +
+    `stroke="${farbe}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" ${attribute}>${PFADE[dim]}</svg>`
   );
 }

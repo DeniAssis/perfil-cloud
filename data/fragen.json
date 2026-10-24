@@ -1,0 +1,282 @@
+{
+  "version": "1.0",
+  "titel": "Welches Cloud-Profil bist du?",
+  "dimensionen": {
+    "multicloud": {
+      "name": "Multicloud",
+      "kurzname": "Multicloud",
+      "farbe": "#00E2FF"
+    },
+    "devops": {
+      "name": "DevOps & Automatisierung",
+      "kurzname": "DevOps",
+      "farbe": "#00FFC4"
+    },
+    "security": {
+      "name": "Security",
+      "kurzname": "Security",
+      "farbe": "#FF272D"
+    },
+    "finops": {
+      "name": "FinOps",
+      "kurzname": "FinOps",
+      "farbe": "#FFE874"
+    },
+    "data_ai": {
+      "name": "Daten & KI",
+      "kurzname": "Daten & KI",
+      "farbe": "#A951F8"
+    }
+  },
+  "maxPunkteProDimension": 8,
+  "fragen": [
+    {
+      "id": "q1",
+      "text": "Ein Dienst fällt sporadisch aus. Was wäre dein erster Schritt?",
+      "optionen": [
+        {
+          "id": "q1a",
+          "dim": "multicloud",
+          "text": "Das Verhalten der Anwendung in verschiedenen Umgebungen oder Regionen vergleichen, bevor du Schlüsse ziehst."
+        },
+        {
+          "id": "q1b",
+          "dim": "devops",
+          "text": "Prüfen, was sich zuletzt geändert hat und ob das Deployment wie erwartet gelaufen ist."
+        },
+        {
+          "id": "q1c",
+          "dim": "finops",
+          "text": "Nachsehen, ob Verbrauch oder Kapazität gestiegen sind oder ungewöhnliche Kosten anfallen."
+        },
+        {
+          "id": "q1d",
+          "dim": "security",
+          "text": "Nach Anzeichen für ungewöhnliche Zugriffe, geänderte Konfigurationen oder andere verdächtige Aktivitäten suchen."
+        },
+        {
+          "id": "q1e",
+          "dim": "data_ai",
+          "text": "Prüfen, ob sich die Eingabedaten oder die von der Anwendung beobachteten Muster verändert haben."
+        }
+      ]
+    },
+    {
+      "id": "q2",
+      "text": "Dein Unternehmen erwägt einen neuen Cloud-Anbieter. Was lohnt sich am meisten zu untersuchen?",
+      "optionen": [
+        {
+          "id": "q2a",
+          "dim": "multicloud",
+          "text": "Wie einfach es wäre, die Lösung bei verschiedenen Anbietern und in verschiedenen Szenarien gut am Laufen zu halten."
+        },
+        {
+          "id": "q2b",
+          "dim": "devops",
+          "text": "Wie der Weg von einer Codeänderung bis zu einer neuen Version in Produktion aussehen würde."
+        },
+        {
+          "id": "q2c",
+          "dim": "security",
+          "text": "Wie es um Identitäten, Zugriffe, Schutz und Compliance-Anforderungen steht."
+        },
+        {
+          "id": "q2d",
+          "dim": "finops",
+          "text": "Wie sich das Abrechnungsmodell verhält und wo langfristige finanzielle Verpflichtungen entstehen können."
+        },
+        {
+          "id": "q2e",
+          "dim": "data_ai",
+          "text": "Welche Möglichkeiten für Daten, Analytics und intelligente Funktionen für das Produkt schon sinnvoll sind."
+        }
+      ]
+    },
+    {
+      "id": "q3",
+      "text": "Welche Art von Aufgabe gibt dir am ehesten das Gefühl: „Das hat sich gelohnt“?",
+      "optionen": [
+        {
+          "id": "q3a",
+          "dim": "multicloud",
+          "text": "Eine Lösung schaffen, die auch dann konsistent bleibt, wenn sich die Umgebung ändert."
+        },
+        {
+          "id": "q3b",
+          "dim": "devops",
+          "text": "Eine Routine voller manueller Schritte in einen automatischen, wiederholbaren Ablauf verwandeln."
+        },
+        {
+          "id": "q3c",
+          "dim": "security",
+          "text": "Eine Schwachstelle finden und entschärfen, die zu einem Vorfall hätte führen können."
+        },
+        {
+          "id": "q3d",
+          "dim": "finops",
+          "text": "Einen Weg finden, Verschwendung zu reduzieren, ohne die Auslieferung zu beeinträchtigen."
+        },
+        {
+          "id": "q3e",
+          "dim": "data_ai",
+          "text": "Ein relevantes Muster in Daten entdecken und daraus etwas Nützliches für das Geschäft machen."
+        }
+      ]
+    },
+    {
+      "id": "q4",
+      "text": "Welche Kennzahl würdest du dir am Monatsende am liebsten ansehen?",
+      "optionen": [
+        {
+          "id": "q4a",
+          "dim": "multicloud",
+          "text": "Wo es Abhängigkeiten gibt, die verschiedene Regionen, Konten oder Anbieter betreffen können."
+        },
+        {
+          "id": "q4b",
+          "dim": "devops",
+          "text": "Wie oft die Teams Änderungen ausgeliefert haben und wie gut sie sich von fehlgeschlagenen Änderungen erholt haben."
+        },
+        {
+          "id": "q4c",
+          "dim": "security",
+          "text": "Welche Zugriffe, Konfigurationen oder Risiken behandelt wurden und welche noch offen sind."
+        },
+        {
+          "id": "q4d",
+          "dim": "finops",
+          "text": "Wo der Verbrauch über den Erwartungen lag und welche Optimierungsmöglichkeiten sich ergeben haben."
+        },
+        {
+          "id": "q4e",
+          "dim": "data_ai",
+          "text": "Wie es um Qualität, Menge und Nutzen der im Laufe des Monats verarbeiteten Daten stand."
+        }
+      ]
+    },
+    {
+      "id": "q5",
+      "text": "Ein neues Projekt startet bei null. An welcher Entscheidung würdest du gern von Anfang an mitwirken?",
+      "optionen": [
+        {
+          "id": "q5a",
+          "dim": "multicloud",
+          "text": "Festlegen, wie sich die Lösung weiterentwickeln kann, ohne an eine einzige Umgebung gebunden zu sein."
+        },
+        {
+          "id": "q5b",
+          "dim": "devops",
+          "text": "Festlegen, wie Änderungen sicher und schnell geprüft, paketiert und in Produktion gebracht werden."
+        },
+        {
+          "id": "q5c",
+          "dim": "security",
+          "text": "Festlegen, welche Zugriffe und Schutzmaßnahmen nötig sind, bevor das System wächst."
+        },
+        {
+          "id": "q5d",
+          "dim": "finops",
+          "text": "Festlegen, wie der Verbrauch verfolgt wird, damit das Wachstum im Budget keine Überraschung wird."
+        },
+        {
+          "id": "q5e",
+          "dim": "data_ai",
+          "text": "Festlegen, wie die Daten organisiert werden, um Analysen, Automatisierungen oder intelligente Funktionen zu ermöglichen."
+        }
+      ]
+    },
+    {
+      "id": "q6",
+      "text": "Du hast eine freie Stunde, um etwas zu lernen, das deine Arbeit verbessern kann. Was würde dich am meisten reizen?",
+      "optionen": [
+        {
+          "id": "q6a",
+          "dim": "multicloud",
+          "text": "Eine Technik, um Lösungen mit mehr Freiheit zwischen verschiedenen Umgebungen zu entwerfen."
+        },
+        {
+          "id": "q6b",
+          "dim": "devops",
+          "text": "Ein Weg, Infrastruktur und Deployments reproduzierbarer zu machen."
+        },
+        {
+          "id": "q6c",
+          "dim": "security",
+          "text": "Ein Ansatz, um Angriffswege vorherzusehen und die Angriffsfläche zu verringern."
+        },
+        {
+          "id": "q6d",
+          "dim": "finops",
+          "text": "Ein Weg, die tatsächlichen Kosten jeder technischen Entscheidung besser zu verstehen."
+        },
+        {
+          "id": "q6e",
+          "dim": "data_ai",
+          "text": "Ein Weg, aus Daten Muster, Vorhersagen oder neue Ideen zu gewinnen."
+        }
+      ]
+    },
+    {
+      "id": "q7",
+      "text": "Welches Problem stört dich in einer Cloud-Umgebung am meisten?",
+      "optionen": [
+        {
+          "id": "q7a",
+          "dim": "multicloud",
+          "text": "Eine Lösung, die sich nur schwer verschieben, vergleichen oder in verschiedenen Umgebungen einheitlich betreiben lässt."
+        },
+        {
+          "id": "q7b",
+          "dim": "devops",
+          "text": "Ein Prozess, der für eine einfache Änderung viele manuelle Schritte braucht."
+        },
+        {
+          "id": "q7c",
+          "dim": "security",
+          "text": "Zu weit gefasste Berechtigungen oder Kontrollen, die nicht mit dem Risiko Schritt halten."
+        },
+        {
+          "id": "q7d",
+          "dim": "finops",
+          "text": "Ressourcen, die weiter Geld kosten, ohne einen entsprechenden Nutzen zu bringen."
+        },
+        {
+          "id": "q7e",
+          "dim": "data_ai",
+          "text": "Verstreute, unzuverlässige oder schlecht organisierte Daten, aus denen sich kaum Wert schöpfen lässt."
+        }
+      ]
+    },
+    {
+      "id": "q8",
+      "text": "Du bekommst ein neues Projekt und darfst frei wählen, wo du anfängst. Was weckt am meisten deine Neugier?",
+      "optionen": [
+        {
+          "id": "q8a",
+          "dim": "multicloud",
+          "text": "Verstehen, wie die Lösung bei verschiedenen Anbietern und in verschiedenen Kontexten gut funktionieren kann."
+        },
+        {
+          "id": "q8b",
+          "dim": "devops",
+          "text": "Herausfinden, wie der Weg in die Produktion zu einem schnellen, automatischen und wiederholbaren Prozess wird."
+        },
+        {
+          "id": "q8c",
+          "dim": "security",
+          "text": "Von Anfang an erkennen, was ausgenutzt oder missbraucht werden könnte, und wie sich dieses Risiko verringern lässt."
+        },
+        {
+          "id": "q8d",
+          "dim": "finops",
+          "text": "Herausfinden, wo technische Entscheidungen Verschwendung verursachen und wie sich die Ressourcennutzung optimieren lässt."
+        },
+        {
+          "id": "q8e",
+          "dim": "data_ai",
+          "text": "Erkunden, wie Daten Muster aufdecken, Entscheidungen unterstützen oder KI-Funktionen ermöglichen können."
+        }
+      ]
+    }
+  ]
+}

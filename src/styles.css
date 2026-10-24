@@ -1,6 +1,6 @@
-/* Perfil Cloud TCB — tokens extraídos de DESIGN.md. Não criar variações. */
+/* Cloud-Profil TCB — Tokens aus DESIGN.md. Keine Varianten erfinden. */
 
-/* Fontes hospedadas no próprio site (OFL): sem requisição a terceiros. */
+/* Schriften selbst gehostet (OFL): keine Anfragen an Dritte. */
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -38,45 +38,45 @@
 }
 
 :root {
-  /* Base (fundos) */
+  /* Basis (Hintergründe) */
   --tcb-navy-900: #00051E;
   --tcb-navy-800: #010C20;
   --tcb-navy-700: #02122C;
   --tcb-navy-600: #0A1F3D;
   --tcb-navy-500: #183C78;
 
-  /* Acento (identidade) */
+  /* Akzent (Identität) */
   --tcb-green: #00FF95;
   --tcb-mint: #00FFC4;
   --tcb-aqua: #44FDD5;
   --tcb-cyan: #00E1EC;
   --tcb-teal: #00B490;
   --tcb-teal-deep: #008484;
-  --tcb-red: #DF2622; /* só no logo e no ícone Security */
+  --tcb-red: #DF2622; /* nur im Logo und im Security-Icon */
 
-  /* Texto */
+  /* Text */
   --text-primary: #FFFFFF;
   --text-muted: #A9B6D0;
   --text-accent: #00FFC4;
 
-  /* Cores por dimensão (fixas) */
+  /* Farben je Dimension (fest) */
   --dim-multicloud: #00E2FF;
   --dim-devops: #00FFC4;
   --dim-security: #FF272D;
   --dim-finops: #FFE874;
   --dim-data-ai: #A951F8;
 
-  /* Gradientes */
+  /* Verläufe */
   --bg-gradient: linear-gradient(160deg, #02122C 0%, #00051E 55%, #010E20 100%);
   --badge-border-gradient: linear-gradient(180deg, #00E1EC 0%, #00FFC4 18%, #183C78 55%, #3C609C 100%);
 
-  /* Tipografia */
+  /* Typografie */
   --font-display: Sora, Inter, system-ui, sans-serif;
   --font-body: Inter, system-ui, sans-serif;
   --tracking-eyebrow: 0.22em;
   --tracking-vertical: 0.3em;
 
-  /* Escala do crachá (base 1080×1350) */
+  /* Maße des Badges (Basis 1080×1350) */
   --badge-w: 1080px;
   --badge-h: 1350px;
   --badge-name: 92px;
@@ -85,7 +85,7 @@
   --badge-radar-label: 20px;
   --badge-vertical: 14px;
 
-  /* Componentes */
+  /* Komponenten */
   --radius-badge: 28px;
   --radius-pill: 16px;
   --radius-button: 12px;
@@ -116,7 +116,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-/* Gradiente fixo numa camada própria: background-attachment: fixed falha no iOS. */
+/* Fester Verlauf in eigener Ebene: background-attachment: fixed versagt auf iOS. */
 body::before {
   content: '';
   position: fixed;
@@ -125,12 +125,12 @@ body::before {
   background: var(--bg-gradient);
 }
 
-/* Só uma tela visível por vez: as demais recebem o atributo hidden. */
-.tela[hidden] {
+/* Immer nur ein Bildschirm sichtbar: Die anderen tragen das Attribut hidden. */
+.bildschirm[hidden] {
   display: none;
 }
 
-.tela {
+.bildschirm {
   position: relative;
   min-height: 100vh;
   display: flex;
@@ -142,7 +142,7 @@ body::before {
   outline: none;
 }
 
-/* ---------- Elementos comuns ---------- */
+/* ---------- Gemeinsame Elemente ---------- */
 
 .eyebrow {
   font-size: 12px;
@@ -152,7 +152,7 @@ body::before {
   color: var(--text-primary);
 }
 
-.eyebrow-muted {
+.eyebrow-gedaempft {
   color: var(--text-muted);
 }
 
@@ -171,39 +171,39 @@ body::before {
   outline-offset: 3px;
 }
 
-.btn-primario {
+.btn-primaer {
   background: var(--tcb-green);
   border-color: var(--tcb-green);
   color: var(--tcb-navy-900);
 }
 
-.btn-primario:hover:not(:disabled) {
+.btn-primaer:hover:not(:disabled) {
   box-shadow: 0 0 28px rgba(0, 255, 149, 0.35);
 }
 
-.btn-primario:active:not(:disabled) {
+.btn-primaer:active:not(:disabled) {
   transform: scale(0.98);
 }
 
-.btn-primario:disabled {
+.btn-primaer:disabled {
   background: var(--tcb-navy-600);
   border-color: var(--border-subtle);
   color: var(--text-muted);
   cursor: not-allowed;
 }
 
-.btn-secundario {
+.btn-sekundaer {
   background: transparent;
   border-color: rgba(255, 255, 255, 0.16);
   color: var(--text-primary);
 }
 
-.btn-secundario:hover {
+.btn-sekundaer:hover {
   border-color: var(--text-muted);
   background: rgba(255, 255, 255, 0.04);
 }
 
-.campo {
+.eingabe {
   height: 56px;
   padding: 0 18px;
   border-radius: var(--radius-button);
@@ -214,30 +214,30 @@ body::before {
   outline: none;
 }
 
-.campo::placeholder {
+.eingabe::placeholder {
   color: var(--text-muted);
   opacity: 0.75;
 }
 
-.campo:focus {
+.eingabe:focus {
   border-color: var(--tcb-green);
   box-shadow: var(--focus-glow);
 }
 
-.erro {
+.fehler {
   margin: 0;
   font-size: 15px;
   color: var(--text-primary);
 }
 
-/* ---------- Tela inicial ---------- */
+/* ---------- Startbildschirm ---------- */
 
-.tela-inicio {
+.bildschirm-start {
   overflow: hidden;
   padding: clamp(32px, 6vh, 64px) 24px clamp(170px, 24vh, 240px);
 }
 
-.decor {
+.deko {
   position: absolute;
   inset: auto 0 0 0;
   height: clamp(150px, 22vh, 230px);
@@ -245,7 +245,7 @@ body::before {
   opacity: 0.5;
 }
 
-.decor-predios {
+.deko-gebaeude {
   position: absolute;
   right: 6%;
   bottom: 40px;
@@ -254,7 +254,7 @@ body::before {
   gap: 6px;
 }
 
-.decor-predios span {
+.deko-gebaeude span {
   width: var(--w);
   height: var(--h);
   background: var(--tcb-navy-600);
@@ -263,13 +263,13 @@ body::before {
   border-radius: 3px 3px 0 0;
 }
 
-.decor-colina {
+.deko-huegel {
   position: absolute;
   border-radius: 50%;
   background: var(--tcb-navy-800);
 }
 
-.decor-colina-1 {
+.deko-huegel-1 {
   left: -10%;
   bottom: -60%;
   width: 45%;
@@ -278,7 +278,7 @@ body::before {
   box-shadow: 0 -12px 40px rgba(0, 180, 144, 0.18);
 }
 
-.decor-colina-2 {
+.deko-huegel-2 {
   left: 25%;
   bottom: -75%;
   width: 40%;
@@ -287,7 +287,7 @@ body::before {
   box-shadow: 0 -10px 36px rgba(0, 132, 132, 0.15);
 }
 
-.decor-colina-3 {
+.deko-huegel-3 {
   right: -12%;
   bottom: -55%;
   width: 42%;
@@ -296,14 +296,14 @@ body::before {
   box-shadow: 0 -12px 40px rgba(0, 180, 144, 0.16);
 }
 
-.decor-fade {
+.deko-verlauf {
   position: absolute;
   inset: auto 0 0 0;
   height: 40%;
   background: linear-gradient(180deg, rgba(0, 5, 30, 0) 0%, var(--tcb-navy-900) 100%);
 }
 
-.inicio-conteudo {
+.start-inhalt {
   position: relative;
   z-index: 1;
   width: 100%;
@@ -315,19 +315,19 @@ body::before {
   text-align: center;
 }
 
-.inicio-logo {
+.start-logo {
   height: clamp(56px, 8vw, 76px);
   width: auto;
 }
 
-.inicio-cabecalho {
+.start-kopf {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 20px;
 }
 
-.evento {
+.event {
   margin: 0;
   display: flex;
   align-items: center;
@@ -336,17 +336,17 @@ body::before {
   gap: 14px;
 }
 
-.evento .eyebrow {
+.event .eyebrow {
   font-size: clamp(12px, 1.6vw, 15px);
 }
 
-.evento-divisor {
+.event-trenner {
   width: 2px;
   height: 16px;
   background: var(--tcb-mint);
 }
 
-.evento-ano {
+.event-jahr {
   font-family: var(--font-display);
   font-size: clamp(13px, 1.7vw, 16px);
   font-weight: 700;
@@ -354,7 +354,7 @@ body::before {
   color: var(--tcb-mint);
 }
 
-.inicio-titulo {
+.start-titel {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
@@ -364,7 +364,7 @@ body::before {
   text-wrap: balance;
 }
 
-.inicio-sub {
+.start-untertitel {
   margin: 0;
   max-width: 440px;
   font-size: clamp(16px, 2vw, 19px);
@@ -373,7 +373,7 @@ body::before {
   text-wrap: balance;
 }
 
-.form-inicio {
+.start-formular {
   width: 100%;
   max-width: 440px;
   display: flex;
@@ -382,13 +382,13 @@ body::before {
   text-align: left;
 }
 
-.form-inicio .btn {
+.start-formular .btn {
   margin-top: 4px;
 }
 
-/* ---------- Tela do quiz ---------- */
+/* ---------- Quizbildschirm ---------- */
 
-.tela-quiz {
+.bildschirm-quiz {
   padding: clamp(24px, 5vh, 48px) 20px;
 }
 
@@ -401,31 +401,31 @@ body::before {
   gap: clamp(28px, 5vh, 44px);
 }
 
-.quiz-topo {
+.quiz-kopf {
   display: flex;
   flex-direction: column;
   gap: 14px;
 }
 
-.progresso {
+.fortschritt {
   display: grid;
   grid-auto-flow: column;
   grid-auto-columns: minmax(0, 1fr);
   gap: 6px;
 }
 
-.progresso-segmento {
+.fortschritt-segment {
   height: 6px;
   border-radius: 3px;
   background: var(--tcb-navy-600);
   transition: background-color 0.2s, box-shadow 0.2s;
 }
 
-.progresso-segmento.is-feito {
+.fortschritt-segment.ist-erledigt {
   background: var(--tcb-green);
 }
 
-.progresso-segmento.is-atual {
+.fortschritt-segment.ist-aktuell {
   background: var(--tcb-mint);
   box-shadow: 0 0 12px rgba(0, 255, 196, 0.7), 0 0 2px var(--tcb-mint);
 }
@@ -437,7 +437,7 @@ body::before {
   gap: 12px;
 }
 
-.contador {
+.zaehler {
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.12em;
@@ -445,11 +445,11 @@ body::before {
   font-variant-numeric: tabular-nums;
 }
 
-.contador-atual {
+.zaehler-aktuell {
   color: var(--text-primary);
 }
 
-.quiz-pergunta {
+.quiz-frage {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 600;
@@ -459,13 +459,13 @@ body::before {
   text-wrap: balance;
 }
 
-.opcoes {
+.optionen {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.opcao {
+.option {
   display: flex;
   align-items: center;
   gap: 16px;
@@ -482,19 +482,19 @@ body::before {
   transition: border-color 0.15s, box-shadow 0.15s, background-color 0.15s;
 }
 
-.opcao:hover,
-.opcao:focus-visible,
-.opcao[aria-checked="true"] {
+.option:hover,
+.option:focus-visible,
+.option[aria-checked="true"] {
   border-color: var(--tcb-green);
   box-shadow: var(--focus-glow);
   outline: none;
 }
 
-.opcao[aria-checked="true"] {
+.option[aria-checked="true"] {
   background: rgba(0, 255, 149, 0.06);
 }
 
-.opcao-letra {
+.option-buchstabe {
   flex: none;
   width: 36px;
   height: 36px;
@@ -508,13 +508,13 @@ body::before {
   border: 1px solid rgba(169, 182, 208, 0.4);
 }
 
-.opcao[aria-checked="true"] .opcao-letra {
+.option[aria-checked="true"] .option-buchstabe {
   background: var(--tcb-green);
   border-color: var(--tcb-green);
   color: var(--tcb-navy-900);
 }
 
-.opcao-texto {
+.option-text {
   flex: 1;
   min-width: 0;
   text-wrap: pretty;
@@ -533,13 +533,13 @@ body::before {
   font-size: 16px;
 }
 
-/* ---------- Tela de resultado ---------- */
+/* ---------- Ergebnisbildschirm ---------- */
 
-.tela-resultado {
+.bildschirm-ergebnis {
   padding: clamp(40px, 7vh, 80px) 20px 96px;
 }
 
-.resultado {
+.ergebnis {
   width: 100%;
   max-width: 960px;
   display: flex;
@@ -549,8 +549,8 @@ body::before {
   text-align: center;
 }
 
-.resultado-perfil,
-.resultado-cracha {
+.ergebnis-profil,
+.ergebnis-badge {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -558,12 +558,12 @@ body::before {
   gap: 24px;
 }
 
-.resultado .eyebrow {
+.ergebnis .eyebrow {
   margin: 0;
   font-size: clamp(12px, 1.5vw, 15px);
 }
 
-.pill-afinidade {
+.pill-affinitaet {
   display: flex;
   align-items: center;
   gap: 18px;
@@ -575,38 +575,38 @@ body::before {
   text-align: left;
 }
 
-.pill-icone {
+.pill-icon {
   flex: none;
   width: 40px;
   height: 40px;
 }
 
-.pill-icone svg {
+.pill-icon svg {
   display: block;
 }
 
-.pill-divisor {
+.pill-trenner {
   flex: none;
   width: 1px;
   align-self: stretch;
   background: var(--pill-border);
 }
 
-.pill-textos {
+.pill-texte {
   display: flex;
   flex-direction: column;
   gap: 4px;
   min-width: 0;
 }
 
-.pill-rotulo {
+.pill-label {
   font-size: 11px;
   font-weight: 600;
   letter-spacing: var(--tracking-eyebrow);
   color: var(--text-muted);
 }
 
-.pill-perfil {
+.pill-profil {
   font-family: var(--font-display);
   font-size: clamp(18px, 2.4vw, 24px);
   font-weight: 700;
@@ -614,13 +614,13 @@ body::before {
   overflow-wrap: anywhere;
 }
 
-.resultado-complementar {
+.ergebnis-ergaenzend {
   margin: 0;
   font-size: 16px;
   color: var(--text-muted);
 }
 
-.resultado-radar {
+.ergebnis-radar {
   margin: 0;
   width: 100%;
   display: flex;
@@ -630,17 +630,17 @@ body::before {
   gap: 24px 48px;
 }
 
-.radar-pagina {
+.radar-seite {
   width: min(100%, 520px);
 }
 
-.radar-pagina svg {
+.radar-seite svg {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.resultado-pontos {
+.ergebnis-punkte {
   margin: 0;
   padding: 0;
   list-style: none;
@@ -651,7 +651,7 @@ body::before {
   text-align: left;
 }
 
-.resultado-pontos li {
+.ergebnis-punkte li {
   display: flex;
   justify-content: space-between;
   gap: 16px;
@@ -662,35 +662,35 @@ body::before {
   font-size: 15px;
 }
 
-.pontos-nome::before {
+.punkte-name::before {
   content: '';
   display: inline-block;
   width: 10px;
   height: 10px;
   margin-right: 10px;
   border-radius: 50%;
-  background: var(--cor);
+  background: var(--farbe);
 }
 
-.pontos-valor {
+.punkte-wert {
   color: var(--text-muted);
   font-variant-numeric: tabular-nums;
 }
 
-.resultado-cracha-titulo {
+.ergebnis-badge-titel {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-.resultado-cracha-titulo h2 {
+.ergebnis-badge-titel h2 {
   margin: 0;
   font-family: var(--font-display);
   font-size: clamp(24px, 3vw, 32px);
   font-weight: 700;
 }
 
-.resultado-titulo {
+.ergebnis-titel {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 800;
@@ -702,19 +702,19 @@ body::before {
   text-wrap: balance;
 }
 
-.cracha-preview {
+.badge-vorschau {
   width: min(100%, 540px);
   aspect-ratio: 4 / 5;
   filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.5));
 }
 
-.cracha-preview svg {
+.badge-vorschau svg {
   display: block;
   width: 100%;
   height: auto;
 }
 
-.resultado-acoes {
+.ergebnis-aktionen {
   width: 100%;
   max-width: 540px;
   display: flex;
@@ -723,6 +723,13 @@ body::before {
   gap: 12px;
 }
 
-.resultado-acoes .btn {
-  flex: 1 1 220px;
+.ergebnis-aktionen .btn {
+  flex: 1 1 200px;
+  padding: 0 20px;
+  white-space: nowrap;
+}
+
+/* Der Download-Text ist länger: mehr Grundbreite, damit er nicht umbricht. */
+.ergebnis-aktionen .btn-primaer {
+  flex-basis: 300px;
 }

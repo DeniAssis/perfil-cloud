@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Test: Dimension außerhalb des DOM</title>
+</head>
+<body>
+<!-- Über den lokalen Server öffnen: http://127.0.0.1:8000/tests/dimension-nicht-im-dom.html -->
+<pre id="ausgabe">läuft …</pre>
+<iframe id="app" src="../index.html" style="width:420px;height:900px"></iframe>
+<script type="module">
+// Vollständige Namen statt Einzelwörter: „Automatisierungen“ kommt als normales Wort in Antworttexten vor.
+const VERBOTEN = ['multicloud', 'devops', 'security', 'finops', 'data_ai', 'data-dim', 'daten & ki', 'daten &amp; ki'];
+const fehlschlaege = [];
+const protokoll = [];
+const warte = (ms) => new Promise((r) => setTimeout(r, ms));
+const pruefe = (doc, schritt) => {
+  const html = doc.documentElement.outerHTML.toLowerCase();
+  for (const v of VERBOTEN) if (html.includes(v)) fehlschlaege.push(`${schritt}: DOM enthält „${v}“`);
+  for (const el of doc.querySelectorAll('*')) {
+    for (const a of el.attributes) if (a.name.startsWith('data-')) fehlschlaege.push(`${schritt}: Attribut ${a.name}`);
+  }
+};
+const erwarte = (bedingung, meldung) => { if (!bedingung) fehlschlaege.push(meldung); };
+
+const rahmen = document.getElementById('app');
+await new Promise((r) => rahmen.addEventListener('load', r, { once: true }));
+const doc = rahmen.contentDocument;
+const $ = (id) => doc.getElementById(id);
+
+pruefe(doc, 'Start');
+const name = $('name');
+name.value = 'Denise';
+name.dispatchEvent(new Event('input'));
+erwarte($('btn-start').disabled, '„Los geht’s“ ist mit nur einem Wort aktiv');
+name.value = 'Denise Assis';
+name.dispatchEvent(new Event('input'));
+erwarte(!$('btn-start').disabled, '„Los geht’s“ ist trotz gültigem Namen gesperrt');
+$('btn-start').click();
+for (let t = 0; t < 50 && $('bildschirm-quiz').hidden; t++) await warte(50);
+erwarte(!$('bildschirm-quiz').hidden, 'Quizbildschirm wurde nicht geöffnet');
+
+const auswahl = [];
+for (let i = 0; i < 8; i++) {
+  pruefe(doc, `Frage ${i + 1} vorher`);
+  erwarte($('quiz-aktuell').textContent === String(i + 1).padStart(2, '0'), `falscher Zähler bei Frage ${i + 1}`);
+  erwarte($('quiz-fortschritt').children.length === 8, 'Fortschrittsbalken hat keine 8 Segmente');
+  erwarte($('btn-weiter').disabled, `„Weiter“ ist ohne Auswahl aktiv (Frage ${i + 1})`);
+  const optionen = $('quiz-optionen').children;
+  erwarte(optionen.length === 5, `Frage ${i + 1} hat keine 5 Optionen`);
+  const n = Math.floor(Math.random() * 5);
+  auswahl.push(optionen[n].querySelector('.option-text').textContent);
+  optionen[n].click();
+  erwarte(!$('btn-weiter').disabled, `„Weiter“ ist nach Auswahl gesperrt (Frage ${i + 1})`);
+  pruefe(doc, `Frage ${i + 1} nachher`);
+  if (i === 3) {
+    $('btn-weiter').click();
+    $('btn-zurueck').click();
+    const markiert = doc.querySelector('#quiz-optionen [aria-checked="true"] .option-text');
+    erwarte(markiert && markiert.textContent === auswahl[3], 'Antwort war nach „Zurück“ nicht mehr markiert');
+  }
+  // Das letzte „Weiter“ öffnet das Ergebnis, dort dürfen Dimensionen erscheinen.
+  $('btn-weiter').click();
+}
+erwarte(!$('bildschirm-ergebnis').hidden, 'Ergebnis wurde nach 8 Antworten nicht geöffnet');
+
+protokoll.push(fehlschlaege.length ? 'FEHLER' : 'OK');
+document.getElementById('ausgabe').textContent = [...protokoll, ...fehlschlaege].join('\n');
+document.title = fehlschlaege.length ? 'FEHLER' : 'OK';
+</script>
+</body>
+</html>
