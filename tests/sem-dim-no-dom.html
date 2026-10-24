@@ -29,10 +29,10 @@ const $ = (id) => doc.getElementById(id);
 
 verificar(doc, 'início');
 const nome = $('nome');
-nome.value = 'Rafael';
+nome.value = 'Denise';
 nome.dispatchEvent(new Event('input'));
 checar($('btn-comecar').disabled, 'Começar habilitado com uma palavra');
-nome.value = 'Rafael Souza';
+nome.value = 'Denise Assis';
 nome.dispatchEvent(new Event('input'));
 checar(!$('btn-comecar').disabled, 'Começar desabilitado com nome válido');
 $('btn-comecar').click();

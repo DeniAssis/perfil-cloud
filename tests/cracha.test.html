@@ -80,8 +80,8 @@ async function pixels(blob) {
 }
 
 const exemplos = {
-  rafael: {
-    nome: 'Rafael Souza',
+  denise: {
+    nome: 'Denise Assis',
     resultado: calcularResultado(dims, respostas({ devops: 4, multicloud: 2, data_ai: 1, security: 1 })),
     dimensoes: dados.dimensoes,
   },
@@ -94,7 +94,7 @@ const exemplos = {
 const pngs = {};
 
 await caso('Nome do arquivo segue cracha-hands-on-project-day-2026-<slug>.png', () => {
-  igual(nomeArquivo('Rafael Souza'), 'cracha-hands-on-project-day-2026-rafael-souza.png', 'simples');
+  igual(nomeArquivo('Denise Assis'), 'cracha-hands-on-project-day-2026-denise-assis.png', 'simples');
   igual(nomeArquivo("  Maria Conceição d'Ávila  "), 'cracha-hands-on-project-day-2026-maria-conceicao-d-avila.png', 'acentos');
   igual(nomeArquivo('李 雷'), 'cracha-hands-on-project-day-2026-participante.png', 'sem latinos');
   return nomeArquivo(exemplos.longo.nome);
@@ -114,9 +114,9 @@ for (const [chave, ex] of Object.entries(exemplos)) {
 }
 
 await caso('Sem fontes embutidas o nome sai diferente (prova de que o embutimento tem efeito)', async () => {
-  pngs.semFontes = await gerarPng(await montarCrachaSvg(exemplos.rafael, { embutirFontes: false }));
+  pngs.semFontes = await gerarPng(await montarCrachaSvg(exemplos.denise, { embutirFontes: false }));
   await mostrar(pngs.semFontes, 'controle: sem fontes embutidas');
-  const a = (await pixels(pngs.rafael)).ctx.getImageData(80, 388, 916, 100).data;
+  const a = (await pixels(pngs.denise)).ctx.getImageData(80, 388, 916, 100).data;
   const b = (await pixels(pngs.semFontes)).ctx.getImageData(80, 388, 916, 100).data;
   let diferentes = 0;
   for (let i = 0; i < a.length; i += 4) if (Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]) > 60) diferentes++;
@@ -126,7 +126,7 @@ await caso('Sem fontes embutidas o nome sai diferente (prova de que o embutiment
 });
 
 if (baixar) {
-  baixarArquivo(pngs.rafael, nomeArquivo(exemplos.rafael.nome));
+  baixarArquivo(pngs.denise, nomeArquivo(exemplos.denise.nome));
   baixarArquivo(pngs.longo, nomeArquivo(exemplos.longo.nome));
   baixarArquivo(pngs.semFontes, 'controle-sem-fontes-embutidas.png');
 }
