@@ -1,6 +1,6 @@
 {
   "versao": "1.0",
-  "titulo": "Qual é o seu perfil Cloud?",
+  "titulo": "Welches Cloud-Profil bist du?",
   "dimensoes": {
     "multicloud": {
       "nome": "Multicloud",
@@ -8,7 +8,7 @@
       "cor": "#00E2FF"
     },
     "devops": {
-      "nome": "DevOps & Automação",
+      "nome": "DevOps & Automatisierung",
       "rotulo": "DevOps",
       "cor": "#00FFC4"
     },
@@ -23,8 +23,8 @@
       "cor": "#FFE874"
     },
     "data_ai": {
-      "nome": "Dados & IA",
-      "rotulo": "Dados & IA",
+      "nome": "Daten & KI",
+      "rotulo": "Daten & KI",
       "cor": "#A951F8"
     }
   },
@@ -32,249 +32,249 @@
   "perguntas": [
     {
       "id": "q1",
-      "texto": "Um serviço começa a falhar de forma intermitente. Qual seria seu primeiro movimento?",
+      "texto": "Ein Dienst fällt sporadisch aus. Was wäre dein erster Schritt?",
       "opcoes": [
         {
           "id": "q1a",
           "dim": "multicloud",
-          "texto": "Comparar o comportamento da aplicação em ambientes ou regiões diferentes antes de tirar conclusões."
+          "texto": "Das Verhalten der Anwendung in verschiedenen Umgebungen oder Regionen vergleichen, bevor du Schlüsse ziehst."
         },
         {
           "id": "q1b",
           "dim": "devops",
-          "texto": "Verificar o que mudou recentemente e se a entrega ocorreu como esperado."
+          "texto": "Prüfen, was sich zuletzt geändert hat und ob das Deployment wie erwartet gelaufen ist."
         },
         {
           "id": "q1c",
           "dim": "finops",
-          "texto": "Conferir se houve aumento de consumo, capacidade ou alguma cobrança fora do padrão."
+          "texto": "Nachsehen, ob Verbrauch oder Kapazität gestiegen sind oder ungewöhnliche Kosten anfallen."
         },
         {
           "id": "q1d",
           "dim": "security",
-          "texto": "Procurar sinais de acesso incomum, alteração de configuração ou outra atividade suspeita."
+          "texto": "Nach Anzeichen für ungewöhnliche Zugriffe, geänderte Konfigurationen oder andere verdächtige Aktivitäten suchen."
         },
         {
           "id": "q1e",
           "dim": "data_ai",
-          "texto": "Verificar se existe alguma mudança no comportamento dos dados de entrada ou nos padrões observados pela aplicação."
+          "texto": "Prüfen, ob sich die Eingabedaten oder die von der Anwendung beobachteten Muster verändert haben."
         }
       ]
     },
     {
       "id": "q2",
-      "texto": "Sua empresa vai considerar um novo provedor de nuvem. O que mais vale investigar?",
+      "texto": "Dein Unternehmen erwägt einen neuen Cloud-Anbieter. Was lohnt sich am meisten zu untersuchen?",
       "opcoes": [
         {
           "id": "q2a",
           "dim": "multicloud",
-          "texto": "Quão simples seria manter a solução funcionando bem em diferentes provedores e cenários."
+          "texto": "Wie einfach es wäre, die Lösung bei verschiedenen Anbietern und in verschiedenen Szenarien gut am Laufen zu halten."
         },
         {
           "id": "q2b",
           "dim": "devops",
-          "texto": "Como seria o caminho entre uma mudança no código e uma nova versão em produção."
+          "texto": "Wie der Weg von einer Codeänderung bis zu einer neuen Version in Produktion aussehen würde."
         },
         {
           "id": "q2c",
           "dim": "security",
-          "texto": "Como ficam identidade, acesso, proteção e requisitos de conformidade."
+          "texto": "Wie es um Identitäten, Zugriffe, Schutz und Compliance-Anforderungen steht."
         },
         {
           "id": "q2d",
           "dim": "finops",
-          "texto": "Como o modelo de cobrança se comporta e onde podem existir compromissos financeiros de longo prazo."
+          "texto": "Wie sich das Abrechnungsmodell verhält und wo langfristige finanzielle Verpflichtungen entstehen können."
         },
         {
           "id": "q2e",
           "dim": "data_ai",
-          "texto": "Quais capacidades para dados, analytics e recursos inteligentes já fazem sentido para o produto."
+          "texto": "Welche Möglichkeiten für Daten, Analytics und intelligente Funktionen für das Produkt schon sinnvoll sind."
         }
       ]
     },
     {
       "id": "q3",
-      "texto": "Qual tipo de tarefa mais provavelmente lhe dá sensação de “valeu a pena”?",
+      "texto": "Welche Art von Aufgabe gibt dir am ehesten das Gefühl: „Das hat sich gelohnt“?",
       "opcoes": [
         {
           "id": "q3a",
           "dim": "multicloud",
-          "texto": "Criar uma solução que continue consistente mesmo quando o ambiente muda."
+          "texto": "Eine Lösung schaffen, die auch dann konsistent bleibt, wenn sich die Umgebung ändert."
         },
         {
           "id": "q3b",
           "dim": "devops",
-          "texto": "Transformar uma rotina cheia de passos manuais em um fluxo automático e repetível."
+          "texto": "Eine Routine voller manueller Schritte in einen automatischen, wiederholbaren Ablauf verwandeln."
         },
         {
           "id": "q3c",
           "dim": "security",
-          "texto": "Encontrar e reduzir uma condição que poderia abrir espaço para um incidente."
+          "texto": "Eine Schwachstelle finden und entschärfen, die zu einem Vorfall hätte führen können."
         },
         {
           "id": "q3d",
           "dim": "finops",
-          "texto": "Encontrar uma forma de reduzir desperdício sem prejudicar a entrega."
+          "texto": "Einen Weg finden, Verschwendung zu reduzieren, ohne die Auslieferung zu beeinträchtigen."
         },
         {
           "id": "q3e",
           "dim": "data_ai",
-          "texto": "Descobrir um padrão relevante em dados e transformá-lo em algo útil para o negócio."
+          "texto": "Ein relevantes Muster in Daten entdecken und daraus etwas Nützliches für das Geschäft machen."
         }
       ]
     },
     {
       "id": "q4",
-      "texto": "No fim do mês, qual indicador você teria mais curiosidade de revisar?",
+      "texto": "Welche Kennzahl würdest du dir am Monatsende am liebsten ansehen?",
       "opcoes": [
         {
           "id": "q4a",
           "dim": "multicloud",
-          "texto": "Onde existem dependências que podem afetar diferentes regiões, contas ou provedores."
+          "texto": "Wo es Abhängigkeiten gibt, die verschiedene Regionen, Konten oder Anbieter betreffen können."
         },
         {
           "id": "q4b",
           "dim": "devops",
-          "texto": "Com que frequência as equipes entregaram mudanças e quão bem conseguiram recuperá-las."
+          "texto": "Wie oft die Teams Änderungen ausgeliefert haben und wie gut sie sich von fehlgeschlagenen Änderungen erholt haben."
         },
         {
           "id": "q4c",
           "dim": "security",
-          "texto": "Quais acessos, configurações ou riscos foram tratados e quais continuam abertos."
+          "texto": "Welche Zugriffe, Konfigurationen oder Risiken behandelt wurden und welche noch offen sind."
         },
         {
           "id": "q4d",
           "dim": "finops",
-          "texto": "Onde houve consumo acima do esperado e quais oportunidades de otimização apareceram."
+          "texto": "Wo der Verbrauch über den Erwartungen lag und welche Optimierungsmöglichkeiten sich ergeben haben."
         },
         {
           "id": "q4e",
           "dim": "data_ai",
-          "texto": "Qual foi a qualidade, o volume e a utilidade dos dados processados ao longo do mês."
+          "texto": "Wie es um Qualität, Menge und Nutzen der im Laufe des Monats verarbeiteten Daten stand."
         }
       ]
     },
     {
       "id": "q5",
-      "texto": "Um projeto novo começou do zero. Em qual decisão você gostaria de participar desde cedo?",
+      "texto": "Ein neues Projekt startet bei null. An welcher Entscheidung würdest du gern von Anfang an mitwirken?",
       "opcoes": [
         {
           "id": "q5a",
           "dim": "multicloud",
-          "texto": "Definir como a solução poderá evoluir sem ficar presa a um único ambiente."
+          "texto": "Festlegen, wie sich die Lösung weiterentwickeln kann, ohne an eine einzige Umgebung gebunden zu sein."
         },
         {
           "id": "q5b",
           "dim": "devops",
-          "texto": "Definir como mudanças serão validadas, empacotadas e colocadas em produção com segurança e velocidade."
+          "texto": "Festlegen, wie Änderungen sicher und schnell geprüft, paketiert und in Produktion gebracht werden."
         },
         {
           "id": "q5c",
           "dim": "security",
-          "texto": "Definir quais acessos e proteções precisam existir antes que o sistema cresça."
+          "texto": "Festlegen, welche Zugriffe und Schutzmaßnahmen nötig sind, bevor das System wächst."
         },
         {
           "id": "q5d",
           "dim": "finops",
-          "texto": "Definir como o consumo será acompanhado para que o crescimento não vire surpresa no orçamento."
+          "texto": "Festlegen, wie der Verbrauch verfolgt wird, damit das Wachstum im Budget keine Überraschung wird."
         },
         {
           "id": "q5e",
           "dim": "data_ai",
-          "texto": "Definir como os dados serão organizados para gerar análises, automações ou recursos inteligentes."
+          "texto": "Festlegen, wie die Daten organisiert werden, um Analysen, Automatisierungen oder intelligente Funktionen zu ermöglichen."
         }
       ]
     },
     {
       "id": "q6",
-      "texto": "Você ganhou uma hora livre para estudar algo que pode melhorar seu trabalho. O que mais despertaria sua curiosidade?",
+      "texto": "Du hast eine freie Stunde, um etwas zu lernen, das deine Arbeit verbessern kann. Was würde dich am meisten reizen?",
       "opcoes": [
         {
           "id": "q6a",
           "dim": "multicloud",
-          "texto": "Uma técnica para projetar soluções com mais liberdade entre diferentes ambientes."
+          "texto": "Eine Technik, um Lösungen mit mehr Freiheit zwischen verschiedenen Umgebungen zu entwerfen."
         },
         {
           "id": "q6b",
           "dim": "devops",
-          "texto": "Uma forma de tornar infraestrutura e entregas mais reproduzíveis."
+          "texto": "Ein Weg, Infrastruktur und Deployments reproduzierbarer zu machen."
         },
         {
           "id": "q6c",
           "dim": "security",
-          "texto": "Uma abordagem para antecipar caminhos de ataque e reduzir exposição."
+          "texto": "Ein Ansatz, um Angriffswege vorherzusehen und die Angriffsfläche zu verringern."
         },
         {
           "id": "q6d",
           "dim": "finops",
-          "texto": "Uma forma de entender melhor o custo real de cada decisão técnica."
+          "texto": "Ein Weg, die tatsächlichen Kosten jeder technischen Entscheidung besser zu verstehen."
         },
         {
           "id": "q6e",
           "dim": "data_ai",
-          "texto": "Uma forma de extrair padrões, previsões ou novas ideias a partir de dados."
+          "texto": "Ein Weg, aus Daten Muster, Vorhersagen oder neue Ideen zu gewinnen."
         }
       ]
     },
     {
       "id": "q7",
-      "texto": "Qual problema mais incomoda você em um ambiente de nuvem?",
+      "texto": "Welches Problem stört dich in einer Cloud-Umgebung am meisten?",
       "opcoes": [
         {
           "id": "q7a",
           "dim": "multicloud",
-          "texto": "Uma solução que fica difícil de mover, comparar ou operar de forma consistente em diferentes ambientes."
+          "texto": "Eine Lösung, die sich nur schwer verschieben, vergleichen oder in verschiedenen Umgebungen einheitlich betreiben lässt."
         },
         {
           "id": "q7b",
           "dim": "devops",
-          "texto": "Um processo que depende de muitas etapas manuais para entregar uma mudança simples."
+          "texto": "Ein Prozess, der für eine einfache Änderung viele manuelle Schritte braucht."
         },
         {
           "id": "q7c",
           "dim": "security",
-          "texto": "Permissões amplas demais ou controles que não acompanham o risco."
+          "texto": "Zu weit gefasste Berechtigungen oder Kontrollen, die nicht mit dem Risiko Schritt halten."
         },
         {
           "id": "q7d",
           "dim": "finops",
-          "texto": "Recursos que continuam consumindo dinheiro sem gerar valor proporcional."
+          "texto": "Ressourcen, die weiter Geld kosten, ohne einen entsprechenden Nutzen zu bringen."
         },
         {
           "id": "q7e",
           "dim": "data_ai",
-          "texto": "Dados espalhados, pouco confiáveis ou sem organização suficiente para gerar valor."
+          "texto": "Verstreute, unzuverlässige oder schlecht organisierte Daten, aus denen sich kaum Wert schöpfen lässt."
         }
       ]
     },
     {
       "id": "q8",
-      "texto": "Você recebe um projeto novo e tem liberdade para escolher onde começar. O que mais desperta sua curiosidade?",
+      "texto": "Du bekommst ein neues Projekt und darfst frei wählen, wo du anfängst. Was weckt am meisten deine Neugier?",
       "opcoes": [
         {
           "id": "q8a",
           "dim": "multicloud",
-          "texto": "Entender como a solução pode funcionar bem em diferentes provedores e contextos."
+          "texto": "Verstehen, wie die Lösung bei verschiedenen Anbietern und in verschiedenen Kontexten gut funktionieren kann."
         },
         {
           "id": "q8b",
           "dim": "devops",
-          "texto": "Descobrir como transformar o caminho até produção em um processo rápido, automático e repetível."
+          "texto": "Herausfinden, wie der Weg in die Produktion zu einem schnellen, automatischen und wiederholbaren Prozess wird."
         },
         {
           "id": "q8c",
           "dim": "security",
-          "texto": "Identificar desde o início o que poderia ser explorado ou mal utilizado e como reduzir esse risco."
+          "texto": "Von Anfang an erkennen, was ausgenutzt oder missbraucht werden könnte, und wie sich dieses Risiko verringern lässt."
         },
         {
           "id": "q8d",
           "dim": "finops",
-          "texto": "Descobrir onde decisões técnicas podem gerar desperdício e como otimizar o uso dos recursos."
+          "texto": "Herausfinden, wo technische Entscheidungen Verschwendung verursachen und wie sich die Ressourcennutzung optimieren lässt."
         },
         {
           "id": "q8e",
           "dim": "data_ai",
-          "texto": "Explorar como dados podem revelar padrões, apoiar decisões ou viabilizar recursos de IA."
+          "texto": "Erkunden, wie Daten Muster aufdecken, Entscheidungen unterstützen oder KI-Funktionen ermöglichen können."
         }
       ]
     }

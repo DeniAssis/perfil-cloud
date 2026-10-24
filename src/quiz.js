@@ -110,7 +110,7 @@ function renderizarPergunta() {
     seg.classList.toggle('is-atual', n === i);
   });
   progresso.setAttribute('aria-valuenow', i + 1);
-  progresso.setAttribute('aria-label', `Pergunta ${i + 1} de ${total}`);
+  progresso.setAttribute('aria-label', `Frage ${i + 1} von ${total}`);
   contadorAtual.textContent = doisDigitos(i + 1);
 
   titPergunta.textContent = pergunta.texto;
@@ -141,7 +141,7 @@ function renderizarPergunta() {
     }),
   );
 
-  btnProxima.textContent = i === total - 1 ? 'Ver resultado' : 'Próxima';
+  btnProxima.textContent = i === total - 1 ? 'Zum Ergebnis' : 'Weiter';
   atualizarProxima();
   titPergunta.focus({ preventScroll: true });
 }
@@ -199,12 +199,12 @@ async function mostrarResultado() {
   const nomes = (lista) => lista.map((d) => dimensoes[d].nome);
   const destaque = resultado.hibrido ? resultado.empatadas[0] : resultado.principal;
 
-  titResultado.textContent = resultado.hibrido ? 'Perfil híbrido' : dimensoes[resultado.principal].nome;
+  titResultado.textContent = resultado.hibrido ? 'Hybridprofil' : dimensoes[resultado.principal].nome;
   pillIcone.innerHTML = desenharIcone(destaque, 0, 0, 40, dimensoes[destaque].cor);
-  pillRotulo.textContent = resultado.hibrido ? 'PERFIL HÍBRIDO' : 'ÁREA DE MAIOR AFINIDADE';
+  pillRotulo.textContent = resultado.hibrido ? 'HYBRIDPROFIL' : 'BEREICH MIT DER HÖCHSTEN AFFINITÄT';
   pillPerfil.textContent = resultado.hibrido ? nomes(resultado.empatadas).join(' + ') : dimensoes[resultado.principal].nome;
   complementar.hidden = !resultado.complementares.length;
-  complementar.textContent = `Você também mostrou afinidade com ${listaPorExtenso(nomes(resultado.complementares))}.`;
+  complementar.textContent = `Du hast auch Affinität gezeigt zu ${listaPorExtenso(nomes(resultado.complementares))}.`;
 
   const eixos = Object.entries(dimensoes).map(([dim, d]) => ({
     dim, rotulo: d.rotulo ?? d.nome, cor: d.cor, valor: resultado.pontos[dim],
@@ -215,7 +215,7 @@ async function mostrarResultado() {
     `</svg>`;
   radarPagina.setAttribute(
     'aria-label',
-    `Radar de afinidade: ${eixos.map((e) => `${dimensoes[e.dim].nome} ${resultado.percentuais[e.dim]}%`).join(', ')}`,
+    `Affinitätsradar: ${eixos.map((e) => `${dimensoes[e.dim].nome} ${resultado.percentuais[e.dim]}%`).join(', ')}`,
   );
   listaPontos.replaceChildren(
     ...resultado.ranking.map((dim) => {
@@ -242,8 +242,8 @@ async function mostrarResultado() {
     const svg = await montarCrachaSvg(dadosCracha(), { embutirFontes: false });
     if (sessao === estado.sessao) crachaPreview.innerHTML = svg;
   } catch (erro) {
-    console.error('Falha ao montar o crachá', erro);
-    resultadoErro.textContent = 'Não foi possível montar o crachá. Recarregue a página e tente novamente.';
+    console.error('Badge konnte nicht erstellt werden', erro);
+    resultadoErro.textContent = 'Das Badge konnte nicht erstellt werden. Bitte lade die Seite neu und versuche es erneut.';
     resultadoErro.hidden = false;
   }
 }
@@ -251,7 +251,7 @@ async function mostrarResultado() {
 const dadosCracha = () => ({ nome: estado.nome, resultado: estado.resultado, dimensoes: estado.dimensoes });
 
 const listaPorExtenso = (itens) =>
-  itens.length > 1 ? `${itens.slice(0, -1).join(', ')} e ${itens.at(-1)}` : itens.join('');
+  itens.length > 1 ? `${itens.slice(0, -1).join(', ')} und ${itens.at(-1)}` : itens.join('');
 
 btnRefazer.addEventListener('click', () => {
   estado.sessao++;
@@ -273,13 +273,13 @@ btnRefazer.addEventListener('click', () => {
 btnBaixar.addEventListener('click', async () => {
   const rotulo = btnBaixar.textContent;
   btnBaixar.disabled = true;
-  btnBaixar.textContent = 'Gerando…';
+  btnBaixar.textContent = 'Wird erstellt …';
   resultadoErro.hidden = true;
   try {
     await baixarCracha(dadosCracha());
   } catch (erro) {
-    console.error('Falha ao exportar PNG', erro);
-    resultadoErro.textContent = 'Não foi possível gerar o PNG. Tente novamente.';
+    console.error('PNG-Export fehlgeschlagen', erro);
+    resultadoErro.textContent = 'Das PNG konnte nicht erstellt werden. Bitte versuche es erneut.';
     resultadoErro.hidden = false;
   } finally {
     btnBaixar.disabled = false;
@@ -307,8 +307,8 @@ formInicio.addEventListener('submit', async (e) => {
   try {
     iniciarQuiz(await dadosQuiz);
   } catch (erro) {
-    console.error('Falha ao carregar perguntas', erro);
-    inicioErro.textContent = 'Não foi possível carregar as perguntas. Recarregue a página e tente novamente.';
+    console.error('Fragen konnten nicht geladen werden', erro);
+    inicioErro.textContent = 'Die Fragen konnten nicht geladen werden. Bitte lade die Seite neu und versuche es erneut.';
     inicioErro.hidden = false;
   } finally {
     btnComecar.disabled = !nomeValido(campoNome.value);

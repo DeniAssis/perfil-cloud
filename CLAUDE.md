@@ -2,7 +2,7 @@
 
 ## Worum es in diesem Projekt geht
 
-**100 % statische** Webanwendung (ohne Backend, ohne Build-Schritt), die das Quiz „Qual é o seu perfil Cloud?“ („Was ist dein Cloud-Profil?“) durchführt und ein personalisiertes virtuelles Abzeichen (Badge) für den **Hands-on Project Day 2026** der The Cloud Bootcamp erzeugt, bereit zum Download als PNG und zur Veröffentlichung auf LinkedIn.
+**100 % statische** Webanwendung (ohne Backend, ohne Build-Schritt), die das Quiz „Welches Cloud-Profil bist du?“ durchführt (Oberfläche komplett auf Deutsch; Original: „Qual é o seu perfil Cloud?“) und ein personalisiertes virtuelles Abzeichen (Badge) für den **Hands-on Project Day 2026** der The Cloud Bootcamp erzeugt, bereit zum Download als PNG und zur Veröffentlichung auf LinkedIn.
 
 Veröffentlichungsziel: **GitHub Pages** (Project Page, erreichbar unter `https://<benutzer>.github.io/<repo>/`).
 

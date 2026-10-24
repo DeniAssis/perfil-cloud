@@ -1,8 +1,8 @@
-# Qual é o seu perfil Cloud?
+# Welches Cloud-Profil bist du?
 
-Quiz für den **Hands-on Project Day 2026** von **The Cloud Bootcamp**. Teilnehmende beantworten 8 Fragen und erfahren ihr Cloud-Profil in fünf Dimensionen: Multicloud, DevOps & Automação, Security, FinOps und Dados & IA. Am Ende erhalten sie einen persönlichen virtuellen Ausweis als PNG (1080×1350), bereit zum Teilen auf LinkedIn.
+Quiz für den **Hands-on Project Day 2026** von **The Cloud Bootcamp**. Teilnehmende beantworten 8 Fragen und erfahren ihr Cloud-Profil in fünf Dimensionen: Multicloud, DevOps & Automatisierung, Security, FinOps und Daten & KI. Am Ende erhalten sie ein persönliches virtuelles Badge als PNG (1080×1350), bereit zum Teilen auf LinkedIn.
 
-Die Oberfläche ist auf Portugiesisch, wie die Veranstaltung.
+Die Oberfläche ist auf Deutsch. Die portugiesische Originalfassung der Fragen liegt in `artefatos/perguntas.json` (Pages-Dokument).
 
 ## Funktionen
 

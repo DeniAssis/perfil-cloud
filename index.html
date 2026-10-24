@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Qual é o seu perfil Cloud? · Hands-on Project Day 2026</title>
+  <title>Welches Cloud-Profil bist du? · Hands-on Project Day 2026</title>
   <link rel="stylesheet" href="./src/styles.css">
   <script type="module" src="./src/quiz.js"></script>
 </head>
@@ -33,14 +33,14 @@
             <span class="evento-divisor"></span>
             <span class="evento-ano">2026</span>
           </p>
-          <h1 id="inicio-titulo" class="inicio-titulo" tabindex="-1">Qual é o seu perfil Cloud?</h1>
-          <p class="inicio-sub">8 perguntas, menos de 3 minutos.<br>Não existem respostas certas ou erradas.</p>
+          <h1 id="inicio-titulo" class="inicio-titulo" tabindex="-1">Welches Cloud-Profil bist du?</h1>
+          <p class="inicio-sub">8 Fragen, weniger als 3 Minuten.<br>Es gibt keine richtigen oder falschen Antworten.</p>
         </div>
 
         <form id="form-inicio" class="form-inicio" novalidate>
-          <label for="nome" class="eyebrow eyebrow-muted">NOME E SOBRENOME</label>
-          <input id="nome" name="nome" type="text" class="campo" autocomplete="name" placeholder="ex.: Denise Assis" maxlength="60" required>
-          <button id="btn-comecar" type="submit" class="btn btn-primario" disabled>Começar</button>
+          <label for="nome" class="eyebrow eyebrow-muted">VOR- UND NACHNAME</label>
+          <input id="nome" name="nome" type="text" class="campo" autocomplete="name" placeholder="z. B. Denise Assis" maxlength="60" required>
+          <button id="btn-comecar" type="submit" class="btn btn-primario" disabled>Los geht's</button>
           <p id="inicio-erro" class="erro" role="alert" hidden></p>
         </form>
       </div>
@@ -60,9 +60,9 @@
 
         <div id="quiz-opcoes" class="opcoes" role="radiogroup" aria-labelledby="quiz-pergunta"></div>
 
-        <nav class="quiz-nav" aria-label="Navegação do quiz">
-          <button id="btn-voltar" type="button" class="btn btn-secundario">Voltar</button>
-          <button id="btn-proxima" type="button" class="btn btn-primario" disabled>Próxima</button>
+        <nav class="quiz-nav" aria-label="Quiz-Navigation">
+          <button id="btn-voltar" type="button" class="btn btn-secundario">Zurück</button>
+          <button id="btn-proxima" type="button" class="btn btn-primario" disabled>Weiter</button>
         </nav>
       </div>
     </section>
@@ -70,7 +70,7 @@
     <section id="tela-resultado" class="tela tela-resultado" aria-labelledby="resultado-titulo" hidden>
       <div class="resultado">
         <div class="resultado-perfil">
-          <p class="eyebrow eyebrow-muted">SEU PERFIL CLOUD É</p>
+          <p class="eyebrow eyebrow-muted">DEIN CLOUD-PROFIL IST</p>
           <h1 id="resultado-titulo" class="resultado-titulo" tabindex="-1"></h1>
           <div class="pill-afinidade">
             <span id="pill-icone" class="pill-icone" aria-hidden="true"></span>
@@ -92,13 +92,13 @@
 
         <div class="resultado-cracha">
           <div class="resultado-cracha-titulo">
-            <p class="eyebrow eyebrow-muted">SEU CRACHÁ VIRTUAL</p>
-            <h2>Compartilhe com sua rede</h2>
+            <p class="eyebrow eyebrow-muted">DEIN VIRTUELLES BADGE</p>
+            <h2>Teile es mit deinem Netzwerk</h2>
           </div>
-          <div id="cracha-preview" class="cracha-preview" role="img" aria-label="Prévia do crachá"></div>
+          <div id="cracha-preview" class="cracha-preview" role="img" aria-label="Vorschau des Badges"></div>
           <div class="resultado-acoes">
-            <button id="btn-baixar" type="button" class="btn btn-primario">Baixar crachá (PNG)</button>
-            <button id="btn-refazer" type="button" class="btn btn-secundario">Refazer o quiz</button>
+            <button id="btn-baixar" type="button" class="btn btn-primario">Badge herunterladen (PNG)</button>
+            <button id="btn-refazer" type="button" class="btn btn-secundario">Quiz wiederholen</button>
           </div>
           <p id="resultado-erro" class="erro" role="alert" hidden></p>
         </div>

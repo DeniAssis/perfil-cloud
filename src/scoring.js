@@ -7,7 +7,7 @@ export const PONTUACAO_MAXIMA = 8;
 export function calcularResultado(dimensoes, escolhidas, maximo = PONTUACAO_MAXIMA) {
   const pontos = Object.fromEntries(dimensoes.map((d) => [d, 0]));
   for (const dim of escolhidas) {
-    if (!(dim in pontos)) throw new Error(`Dimensão desconhecida: ${dim}`);
+    if (!(dim in pontos)) throw new Error(`Unbekannte Dimension: ${dim}`);
     pontos[dim] += 1;
   }
 

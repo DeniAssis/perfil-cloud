@@ -39,7 +39,7 @@ function carregarRecursos() {
     const fontes = await Promise.all(
       FONTES.map(async (f) => {
         const resp = await fetch(new URL(f.arquivo, import.meta.url));
-        if (!resp.ok) throw new Error(`Fonte ${f.arquivo}: HTTP ${resp.status}`);
+        if (!resp.ok) throw new Error(`Schrift ${f.arquivo}: HTTP ${resp.status}`);
         const dados = await resp.arrayBuffer();
         // Registra também na página, para medir textos com as mesmas métricas.
         const face = new FontFace(f.familia, dados, { weight: f.pesos, unicodeRange: f.faixa });
@@ -165,8 +165,8 @@ export async function montarCrachaSvg({ nome, resultado, dimensoes }, { embutirF
   const { fontes, logo } = await carregarRecursos();
 
   const destaque = resultado.hibrido
-    ? { rotulo: 'PERFIL HÍBRIDO', texto: resultado.empatadas.map((d) => dimensoes[d].nome).join(' + '), dim: resultado.empatadas[0] }
-    : { rotulo: 'ÁREA DE MAIOR AFINIDADE', texto: dimensoes[resultado.principal].nome, dim: resultado.principal };
+    ? { rotulo: 'HYBRIDPROFIL', texto: resultado.empatadas.map((d) => dimensoes[d].nome).join(' + '), dim: resultado.empatadas[0] }
+    : { rotulo: 'BEREICH MIT DER HÖCHSTEN AFFINITÄT', texto: dimensoes[resultado.principal].nome, dim: resultado.principal };
 
   const estilo = embutirFontes
     ? `<style>${fontes
@@ -235,7 +235,7 @@ ${texto('HANDS-ON PROJECT DAY', { ...evento, x: xEvento, y: yEvento, cor: '#FFFF
 <rect x="${xEvento + lEvento + 28}" y="${yEvento - 17}" width="3" height="34" fill="#00FFC4"/>
 ${texto('2026', { ...ano, x: xEvento + lEvento + 28 + 3 + 28, y: yEvento, cor: '#00FFC4' })}
 <rect x="160" y="304" width="${W - 320}" height="2" fill="url(#cr-divisor)"/>
-${textoCentrado('PARTICIPANTE', { familia: INTER, peso: 600, tamanho: 26, espacamento: 26 * 0.32, y: 350 + (26 * ALTURA_LINHA[INTER]) / 2, cor: '#00FFC4' })}
+${textoCentrado('TEILNEHMER:IN', { familia: INTER, peso: 600, tamanho: 26, espacamento: 26 * 0.32, y: 350 + (26 * ALTURA_LINHA[INTER]) / 2, cor: '#00FFC4' })}
 ${texto(nome, {
   familia: SORA, peso: 700, tamanho: nomeAjustado.tamanho, espacamento: -0.02 * nomeAjustado.tamanho, cor: '#FFFFFF',
   x: (W - nomeAjustado.largura) / 2, y: 388 + (92 * 1.08) / 2, extra: nomeAjustado.comprimir,
@@ -279,22 +279,26 @@ export async function gerarPng(svg) {
   desenhar();
 
   return new Promise((ok, erro) =>
-    canvas.toBlob((blob) => (blob ? ok(blob) : erro(new Error('canvas.toBlob não gerou o PNG'))), 'image/png'),
+    canvas.toBlob((blob) => (blob ? ok(blob) : erro(new Error('canvas.toBlob hat kein PNG erzeugt'))), 'image/png'),
   );
 }
+
+// Umlaute nach deutscher Schreibweise; übrige Akzente werden entfernt.
+const UMLAUTE = { ä: 'ae', ö: 'oe', ü: 'ue', Ä: 'Ae', Ö: 'Oe', Ü: 'Ue', ß: 'ss' };
 
 export function slug(texto) {
   return (
     texto
+      .replace(/[äöüÄÖÜß]/g, (c) => UMLAUTE[c])
       .normalize('NFD')
-      .replace(/[̀-ͯ]/g, '')
+      .replace(/[\u0300-\u036f]/g, '')
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
-      .replace(/^-+|-+$/g, '') || 'participante'
+      .replace(/^-+|-+$/g, '') || 'profil'
   );
 }
 
-export const nomeArquivo = (nome) => `cracha-hands-on-project-day-2026-${slug(nome)}.png`;
+export const nomeArquivo = (nome) => `badge-hands-on-project-day-2026-${slug(nome)}.png`;
 
 export function baixarArquivo(blob, nome) {
   const url = URL.createObjectURL(blob);

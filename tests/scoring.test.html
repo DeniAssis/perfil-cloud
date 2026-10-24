@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="de">
 <head>
 <meta charset="utf-8">
-<title>Testes de pontuação</title>
+<title>Tests der Punktevergabe</title>
 <style>
   body { font: 15px/1.5 system-ui, sans-serif; margin: 24px; background: #00051E; color: #FFFFFF; }
   li { margin: 6px 0; }
@@ -12,8 +12,8 @@
 </style>
 </head>
 <body>
-<!-- Abrir via servidor local: http://127.0.0.1:8000/tests/scoring.test.html -->
-<h1 id="resumo">rodando…</h1>
+<!-- Über den lokalen Server öffnen: http://127.0.0.1:8000/tests/scoring.test.html -->
+<h1 id="resumo">läuft …</h1>
 <ol id="casos"></ol>
 <script type="module">
 import { calcularResultado } from '../src/scoring.js';
@@ -35,7 +35,7 @@ function caso(nome, fn) {
   }
   if (!ok) falhas++;
   const li = document.createElement('li');
-  li.innerHTML = `<strong class="${ok ? 'ok' : 'falhou'}">${ok ? 'OK' : 'FALHOU'}</strong> ${nome} <code></code>`;
+  li.innerHTML = `<strong class="${ok ? 'ok' : 'falhou'}">${ok ? 'OK' : 'FEHLER'}</strong> ${nome} <code></code>`;
   li.querySelector('code').textContent = detalhe;
   lista.append(li);
 }
@@ -43,75 +43,75 @@ function caso(nome, fn) {
 function igual(atual, esperado, rotulo) {
   const a = JSON.stringify(atual);
   const e = JSON.stringify(esperado);
-  if (a !== e) throw new Error(`${rotulo}: esperado ${e}, obtido ${a}`);
+  if (a !== e) throw new Error(`${rotulo}: erwartet ${e}, erhalten ${a}`);
 }
 
-// Monta uma lista de respostas a partir de { dim: quantidade }.
+// Baut eine Antwortliste aus { dim: Anzahl }.
 const respostas = (mapa) => Object.entries(mapa).flatMap(([d, n]) => Array(n).fill(d));
 
-caso('1. Cada uma das 5 dimensões aparece exatamente 8 vezes no perguntas.json', () => {
-  igual(dims.length, 5, 'número de dimensões');
+caso('1. Jede der 5 Dimensionen kommt in perguntas.json genau 8-mal vor', () => {
+  igual(dims.length, 5, 'Anzahl der Dimensionen');
   const contagem = Object.fromEntries(dims.map((d) => [d, 0]));
   for (const p of dados.perguntas) for (const o of p.opcoes) contagem[o.dim]++;
-  igual(contagem, Object.fromEntries(dims.map((d) => [d, 8])), 'contagem');
+  igual(contagem, Object.fromEntries(dims.map((d) => [d, 8])), 'Zählung');
   return JSON.stringify(contagem);
 });
 
-caso('2. Nenhuma pergunta tem duas alternativas da mesma dimensão', () => {
+caso('2. Keine Frage hat zwei Optionen derselben Dimension', () => {
   for (const p of dados.perguntas) {
     const vistas = p.opcoes.map((o) => o.dim);
-    if (new Set(vistas).size !== vistas.length) throw new Error(`${p.id} repete dimensão: ${vistas.join(', ')}`);
+    if (new Set(vistas).size !== vistas.length) throw new Error(`${p.id} wiederholt eine Dimension: ${vistas.join(', ')}`);
   }
-  return `${dados.perguntas.length} perguntas verificadas`;
+  return `${dados.perguntas.length} Fragen geprüft`;
 });
 
-caso('3. Responder sempre DevOps produz DevOps 8 e todas as outras 0', () => {
+caso('3. Immer DevOps gewählt: DevOps 8, alle anderen 0', () => {
   const escolhidas = dados.perguntas.map((p) => p.opcoes.find((o) => o.dim === 'devops').dim);
   const r = calcularResultado(dims, escolhidas);
-  igual(r.pontos, { multicloud: 0, devops: 8, security: 0, finops: 0, data_ai: 0 }, 'pontos');
-  igual(r.percentuais.devops, 100, 'percentual DevOps');
-  igual(r.principal, 'devops', 'principal');
+  igual(r.pontos, { multicloud: 0, devops: 8, security: 0, finops: 0, data_ai: 0 }, 'Punkte');
+  igual(r.percentuais.devops, 100, 'Prozent DevOps');
+  igual(r.principal, 'devops', 'Hauptprofil');
   igual(r.hibrido, false, 'hibrido');
   return JSON.stringify(r.pontos);
 });
 
-caso('4. DevOps 4, Dados & IA 2, Security 1, Multicloud 1, FinOps 0 → principal DevOps, sem complementar', () => {
+caso('4. DevOps 4, Daten & KI 2, Security 1, Multicloud 1, FinOps 0 → Hauptprofil DevOps, kein ergänzendes Profil', () => {
   const r = calcularResultado(dims, respostas({ devops: 4, data_ai: 2, security: 1, multicloud: 1 }));
-  igual(r.principal, 'devops', 'principal');
-  igual(r.complementares, [], 'complementares');
+  igual(r.principal, 'devops', 'Hauptprofil');
+  igual(r.complementares, [], 'ergänzende Profile');
   igual(r.hibrido, false, 'hibrido');
-  igual(r.percentuais, { multicloud: 13, devops: 50, security: 13, finops: 0, data_ai: 25 }, 'percentuais');
+  igual(r.percentuais, { multicloud: 13, devops: 50, security: 13, finops: 0, data_ai: 25 }, 'Prozentwerte');
   return JSON.stringify(r.pontos);
 });
 
-caso('5. Empate 4-4 entre duas dimensões produz hibrido: true', () => {
+caso('5. Gleichstand 4:4 zwischen zwei Dimensionen ergibt hibrido: true', () => {
   const r = calcularResultado(dims, respostas({ security: 4, finops: 4 }));
   igual(r.hibrido, true, 'hibrido');
-  igual(r.empatadas, ['security', 'finops'], 'empatadas');
-  igual(r.principal, null, 'principal');
+  igual(r.empatadas, ['security', 'finops'], 'gleichauf');
+  igual(r.principal, null, 'Hauptprofil');
   return JSON.stringify(r.empatadas);
 });
 
-caso('Extra: segundo colocado a 1 ponto vira complementar', () => {
+caso('Extra: Zweitplatzierter mit 1 Punkt Abstand wird ergänzendes Profil', () => {
   const r = calcularResultado(dims, respostas({ devops: 3, multicloud: 2, security: 1, finops: 1, data_ai: 1 }));
-  igual(r.principal, 'devops', 'principal');
-  igual(r.complementares, ['multicloud'], 'complementares');
+  igual(r.principal, 'devops', 'Hauptprofil');
+  igual(r.complementares, ['multicloud'], 'ergänzende Profile');
 });
 
-caso('Extra: empate no segundo lugar a 1 ponto lista todas as empatadas', () => {
+caso('Extra: Gleichstand auf Platz 2 mit 1 Punkt Abstand listet alle Gleichplatzierten', () => {
   const r = calcularResultado(dims, respostas({ data_ai: 3, finops: 2, security: 2, multicloud: 1 }));
-  igual(r.principal, 'data_ai', 'principal');
-  igual(r.complementares, ['security', 'finops'], 'complementares');
+  igual(r.principal, 'data_ai', 'Hauptprofil');
+  igual(r.complementares, ['security', 'finops'], 'ergänzende Profile');
 });
 
-caso('Extra: dimensão desconhecida gera erro', () => {
+caso('Extra: Unbekannte Dimension löst einen Fehler aus', () => {
   let erro = null;
   try { calcularResultado(dims, ['cloud']); } catch (e) { erro = e; }
-  if (!erro) throw new Error('nenhum erro lançado');
+  if (!erro) throw new Error('kein Fehler ausgelöst');
 });
 
 const total = lista.children.length;
-const resumo = falhas ? `FALHOU: ${falhas} de ${total}` : `OK: ${total} de ${total}`;
+const resumo = falhas ? `FEHLER: ${falhas} von ${total}` : `OK: ${total} von ${total}`;
 document.getElementById('resumo').textContent = resumo;
 document.title = resumo;
 </script>

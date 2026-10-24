@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="de">
 <head>
 <meta charset="utf-8">
-<title>Testes do crachá</title>
+<title>Tests des Badges</title>
 <style>
   body { font: 15px/1.5 system-ui, sans-serif; margin: 24px; background: #00051E; color: #FFFFFF; }
   li { margin: 6px 0; }
@@ -15,8 +15,8 @@
 </style>
 </head>
 <body>
-<!-- Abrir via servidor local: http://127.0.0.1:8000/tests/cracha.test.html (?baixar=1 baixa os PNGs) -->
-<h1 id="resumo">rodando…</h1>
+<!-- Über den lokalen Server öffnen: http://127.0.0.1:8000/tests/cracha.test.html (?baixar=1 lädt die PNGs herunter) -->
+<h1 id="resumo">läuft …</h1>
 <ol id="casos"></ol>
 <div class="pngs" id="pngs"></div>
 <script type="module">
@@ -40,13 +40,13 @@ async function caso(nome, fn) {
     falhas++;
   }
   const li = document.createElement('li');
-  li.innerHTML = `<strong class="${ok ? 'ok' : 'falhou'}">${ok ? 'OK' : 'FALHOU'}</strong> ${nome} <code></code>`;
+  li.innerHTML = `<strong class="${ok ? 'ok' : 'falhou'}">${ok ? 'OK' : 'FEHLER'}</strong> ${nome} <code></code>`;
   li.querySelector('code').textContent = detalhe;
   lista.append(li);
 }
 
 const igual = (a, e, rotulo) => {
-  if (a !== e) throw new Error(`${rotulo}: esperado ${JSON.stringify(e)}, obtido ${JSON.stringify(a)}`);
+  if (a !== e) throw new Error(`${rotulo}: erwartet ${JSON.stringify(e)}, erhalten ${JSON.stringify(a)}`);
 };
 const respostas = (mapa) => Object.entries(mapa).flatMap(([d, n]) => Array(n).fill(d));
 
@@ -66,7 +66,7 @@ const comoDataUrl = (blob) =>
     leitor.readAsDataURL(blob);
   });
 
-// Data URL + canvas: no Chrome headless com tempo virtual, blob: e createImageBitmap não resolvem.
+// Data-URL + Canvas: In headless Chrome mit virtueller Zeit lösen blob: und createImageBitmap nie auf.
 async function pixels(blob) {
   const img = new Image();
   img.src = await comoDataUrl(blob);
@@ -86,53 +86,54 @@ const exemplos = {
     dimensoes: dados.dimensoes,
   },
   longo: {
-    nome: 'Maria Conceição de Albuquerque Figueiredo',
+    nome: 'Anna-Lena Großmann-Schäfer von Hohenzollern',
     resultado: calcularResultado(dims, respostas({ security: 3, finops: 3, multicloud: 1, data_ai: 1 })),
     dimensoes: dados.dimensoes,
   },
 };
 const pngs = {};
 
-await caso('Nome do arquivo segue cracha-hands-on-project-day-2026-<slug>.png', () => {
-  igual(nomeArquivo('Denise Assis'), 'cracha-hands-on-project-day-2026-denise-assis.png', 'simples');
-  igual(nomeArquivo("  Maria Conceição d'Ávila  "), 'cracha-hands-on-project-day-2026-maria-conceicao-d-avila.png', 'acentos');
-  igual(nomeArquivo('李 雷'), 'cracha-hands-on-project-day-2026-participante.png', 'sem latinos');
+await caso('Dateiname folgt badge-hands-on-project-day-2026-<slug>.png', () => {
+  igual(nomeArquivo('Denise Assis'), 'badge-hands-on-project-day-2026-denise-assis.png', 'einfach');
+  igual(nomeArquivo('  Jörg Großmann  '), 'badge-hands-on-project-day-2026-joerg-grossmann.png', 'Umlaute');
+  igual(nomeArquivo("Maria Conceição d'Ávila"), 'badge-hands-on-project-day-2026-maria-conceicao-d-avila.png', 'Akzente');
+  igual(nomeArquivo('李 雷'), 'badge-hands-on-project-day-2026-profil.png', 'ohne lateinische Zeichen');
   return nomeArquivo(exemplos.longo.nome);
 });
 
 for (const [chave, ex] of Object.entries(exemplos)) {
-  await caso(`PNG ${LARGURA}×${ALTURA} gerado com fontes embutidas (${ex.nome})`, async () => {
+  await caso(`PNG ${LARGURA}×${ALTURA} mit eingebetteten Schriften erzeugt (${ex.nome})`, async () => {
     const svg = await montarCrachaSvg(ex);
-    if (!svg.includes('data:font/woff2;base64,')) throw new Error('SVG sem fontes embutidas');
+    if (!svg.includes('data:font/woff2;base64,')) throw new Error('SVG ohne eingebettete Schriften');
     pngs[chave] = await gerarPng(svg);
-    igual(pngs[chave].type, 'image/png', 'tipo');
+    igual(pngs[chave].type, 'image/png', 'Typ');
     const { largura, altura } = await pixels(pngs[chave]);
-    igual(`${largura}×${altura}`, `${LARGURA}×${ALTURA}`, 'dimensões');
+    igual(`${largura}×${altura}`, `${LARGURA}×${ALTURA}`, 'Abmessungen');
     await mostrar(pngs[chave], nomeArquivo(ex.nome));
-    return `${Math.round(svg.length / 1024)} KB de SVG, ${Math.round(pngs[chave].size / 1024)} KB de PNG`;
+    return `${Math.round(svg.length / 1024)} KB SVG, ${Math.round(pngs[chave].size / 1024)} KB PNG`;
   });
 }
 
-await caso('Sem fontes embutidas o nome sai diferente (prova de que o embutimento tem efeito)', async () => {
+await caso('Ohne eingebettete Schriften sieht der Name anders aus (Beweis, dass die Einbettung wirkt)', async () => {
   pngs.semFontes = await gerarPng(await montarCrachaSvg(exemplos.denise, { embutirFontes: false }));
-  await mostrar(pngs.semFontes, 'controle: sem fontes embutidas');
+  await mostrar(pngs.semFontes, 'Kontrolle: ohne eingebettete Schriften');
   const a = (await pixels(pngs.denise)).ctx.getImageData(80, 388, 916, 100).data;
   const b = (await pixels(pngs.semFontes)).ctx.getImageData(80, 388, 916, 100).data;
   let diferentes = 0;
   for (let i = 0; i < a.length; i += 4) if (Math.abs(a[i] - b[i]) + Math.abs(a[i + 1] - b[i + 1]) + Math.abs(a[i + 2] - b[i + 2]) > 60) diferentes++;
   const pct = (100 * diferentes) / (a.length / 4);
-  if (pct < 1) throw new Error(`só ${pct.toFixed(2)}% dos pixels do nome mudaram`);
-  return `${pct.toFixed(1)}% dos pixels da área do nome diferem`;
+  if (pct < 1) throw new Error(`nur ${pct.toFixed(2)} % der Pixel im Namen haben sich geändert`);
+  return `${pct.toFixed(1)} % der Pixel im Namensbereich unterscheiden sich`;
 });
 
 if (baixar) {
   baixarArquivo(pngs.denise, nomeArquivo(exemplos.denise.nome));
   baixarArquivo(pngs.longo, nomeArquivo(exemplos.longo.nome));
-  baixarArquivo(pngs.semFontes, 'controle-sem-fontes-embutidas.png');
+  baixarArquivo(pngs.semFontes, 'kontrolle-ohne-eingebettete-schriften.png');
 }
 
 const total = lista.children.length;
-const resumo = falhas ? `FALHOU: ${falhas} de ${total}` : `OK: ${total} de ${total}`;
+const resumo = falhas ? `FEHLER: ${falhas} von ${total}` : `OK: ${total} von ${total}`;
 document.getElementById('resumo').textContent = resumo;
 document.title = resumo;
 </script>
