@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Teste: dimensão fora do DOM</title>
+</head>
+<body>
+<!-- Abrir via servidor local: http://127.0.0.1:8000/tests/sem-dim-no-dom.html -->
+<pre id="saida">rodando…</pre>
+<iframe id="app" src="../index.html" style="width:420px;height:900px"></iframe>
+<script type="module">
+const PROIBIDOS = ['multicloud', 'devops', 'security', 'finops', 'data_ai', 'data-dim', 'dados & ia', 'dados &amp; ia', 'automação'];
+const falhas = [];
+const log = [];
+const espera = (ms) => new Promise((r) => setTimeout(r, ms));
+const verificar = (doc, etapa) => {
+  const html = doc.documentElement.outerHTML.toLowerCase();
+  for (const p of PROIBIDOS) if (html.includes(p)) falhas.push(`${etapa}: DOM contém "${p}"`);
+  for (const el of doc.querySelectorAll('*')) {
+    for (const a of el.attributes) if (a.name.startsWith('data-')) falhas.push(`${etapa}: atributo ${a.name}`);
+  }
+};
+const checar = (cond, msg) => { if (!cond) falhas.push(msg); };
+
+const frame = document.getElementById('app');
+await new Promise((r) => frame.addEventListener('load', r, { once: true }));
+const doc = frame.contentDocument;
+const $ = (id) => doc.getElementById(id);
+
+verificar(doc, 'início');
+const nome = $('nome');
+nome.value = 'Rafael';
+nome.dispatchEvent(new Event('input'));
+checar($('btn-comecar').disabled, 'Começar habilitado com uma palavra');
+nome.value = 'Rafael Souza';
+nome.dispatchEvent(new Event('input'));
+checar(!$('btn-comecar').disabled, 'Começar desabilitado com nome válido');
+$('btn-comecar').click();
+for (let t = 0; t < 50 && $('tela-quiz').hidden; t++) await espera(50);
+checar(!$('tela-quiz').hidden, 'tela do quiz não abriu');
+
+const escolhas = [];
+for (let i = 0; i < 8; i++) {
+  verificar(doc, `pergunta ${i + 1} antes`);
+  checar($('quiz-atual').textContent === String(i + 1).padStart(2, '0'), `contador errado na pergunta ${i + 1}`);
+  checar($('quiz-progresso').children.length === 8, 'barra sem 8 segmentos');
+  checar($('btn-proxima').disabled, `Próxima habilitado sem seleção na pergunta ${i + 1}`);
+  const opcoes = $('quiz-opcoes').children;
+  checar(opcoes.length === 5, `pergunta ${i + 1} sem 5 opções`);
+  const n = Math.floor(Math.random() * 5);
+  escolhas.push(opcoes[n].querySelector('.opcao-texto').textContent);
+  opcoes[n].click();
+  checar(!$('btn-proxima').disabled, `Próxima desabilitado após seleção na pergunta ${i + 1}`);
+  verificar(doc, `pergunta ${i + 1} depois`);
+  if (i === 3) {
+    $('btn-proxima').click();
+    $('btn-voltar').click();
+    const marcada = doc.querySelector('#quiz-opcoes [aria-checked="true"] .opcao-texto');
+    checar(marcada && marcada.textContent === escolhas[3], 'resposta não ficou marcada ao voltar');
+  }
+  // A última "Próxima" abre o resultado, onde as dimensões podem aparecer.
+  $('btn-proxima').click();
+}
+checar(!$('tela-resultado').hidden, 'resultado não abriu após 8 respostas');
+
+log.push(falhas.length ? 'FALHOU' : 'OK');
+document.getElementById('saida').textContent = [...log, ...falhas].join('\n');
+document.title = falhas.length ? 'FALHOU' : 'OK';
+</script>
+</body>
+</html>
